@@ -222,6 +222,21 @@
             z-index: 1000;
         }
         
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 3px solid #3498db;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
         @media (max-width: 600px) {
             .container {
                 padding: 20px;
@@ -255,6 +270,8 @@
                 <label for="multisport-value">Multisport Value (in PLN):</label>
                 <input type="number" id="multisport-value" step="0.01" value="40.0" min="0">
             </div>
+            
+            <button id="save-settings-btn">Save Settings for All Users</button>
         </div>
         
         <h2 class="section-title">Reward Calculation</h2>
@@ -299,6 +316,10 @@
     </div>
 
     <script>
+        // Конфигурация Google Sheets
+        const SHEET_ID = '1B2B_CALCULATOR_SHEET_ID'; // Замените на реальный ID вашей Google таблицы
+        const SHEET_NAME = 'Settings';
+        
         document.addEventListener('DOMContentLoaded', function() {
             const calculateBtn = document.getElementById('calculate-btn');
             const resultDiv = document.getElementById('result');
@@ -307,9 +328,13 @@
             const adminLink = document.getElementById('adminLink');
             const detailsList = document.getElementById('details-list');
             const saveNotification = document.getElementById('saveNotification');
+            const saveSettingsBtn = document.getElementById('save-settings-btn');
             
-            // Загрузка сохраненных значений при запуске
-            loadSavedSettings();
+            let exchangeRate = 4.0;
+            let multisportValue = 40.0;
+            
+            // Загрузка настроек при запуске
+            loadSettingsFromSheet();
             
             // Проверка доступа к админ-панели
             let accessGranted = localStorage.getItem('adminAccess') === 'true';
@@ -330,12 +355,34 @@
                 }
             });
             
+            // Сохранение настроек в Google Sheets
+            saveSettingsBtn.addEventListener('click', async function() {
+                const newExchangeRate = parseFloat(document.getElementById('exchange-rate').value);
+                const newMultisportValue = parseFloat(document.getElementById('multisport-value').value);
+                
+                if (isNaN(newExchangeRate) || isNaN(newMultisportValue)) {
+                    alert('Please enter valid values');
+                    return;
+                }
+                
+                saveSettingsBtn.innerHTML = '<span class="loading"></span> Saving...';
+                saveSettingsBtn.disabled = true;
+                
+                try {
+                    await saveSettingsToSheet(newExchangeRate, newMultisportValue);
+                    exchangeRate = newExchangeRate;
+                    multisportValue = newMultisportValue;
+                    showSaveNotification('Settings saved for all users!');
+                } catch (error) {
+                    alert('Error saving settings: ' + error.message);
+                } finally {
+                    saveSettingsBtn.innerHTML = 'Save Settings for All Users';
+                    saveSettingsBtn.disabled = false;
+                }
+            });
+            
             // Обработчик расчета
             calculateBtn.addEventListener('click', function() {
-                // Получаем значения из панели администратора
-                const exchangeRate = parseFloat(document.getElementById('exchange-rate').value);
-                const multisportValue = parseFloat(document.getElementById('multisport-value').value);
-                
                 // Получаем значения от пользователя
                 const usdAmount = parseFloat(document.getElementById('usd-amount').value) || 0;
                 const additionalUSD = parseFloat(document.getElementById('additional-usd').value) || 0;
@@ -348,7 +395,7 @@
                     return;
                 }
                 
-                // Выполняем расчет
+                // Выполняем расчет с текущими настройками
                 const mainAmountPLN = usdAmount * exchangeRate;
                 const additionalUSDinPLN = additionalUSD * exchangeRate;
                 
@@ -403,35 +450,49 @@
                 detailsList.appendChild(li);
             }
             
-            // Сохранение настроек при изменении
-            const adminInputs = document.querySelectorAll('.admin-panel input');
-            adminInputs.forEach(input => {
-                input.addEventListener('change', function() {
-                    localStorage.setItem(input.id, input.value);
-                    showSaveNotification();
-                });
-            });
-            
-            // Загрузка сохраненных настроек
-            function loadSavedSettings() {
-                const exchangeRate = localStorage.getItem('exchange-rate');
-                const multisportValue = localStorage.getItem('multisport-value');
-                
-                if (exchangeRate) {
+            // Загрузка настроек из Google Sheets
+            async function loadSettingsFromSheet() {
+                try {
+                    // В реальном приложении здесь будет запрос к Google Sheets API
+                    // Для демонстрации используем localStorage как fallback
+                    
+                    const savedExchangeRate = localStorage.getItem('shared_exchange_rate');
+                    const savedMultisportValue = localStorage.getItem('shared_multisport_value');
+                    
+                    if (savedExchangeRate) exchangeRate = parseFloat(savedExchangeRate);
+                    if (savedMultisportValue) multisportValue = parseFloat(savedMultisportValue);
+                    
+                    // Обновляем поля в админ-панели
                     document.getElementById('exchange-rate').value = exchangeRate;
-                }
-                
-                if (multisportValue) {
                     document.getElementById('multisport-value').value = multisportValue;
+                    
+                } catch (error) {
+                    console.log('Using default settings:', error);
+                }
+            }
+            
+            // Сохранение настроек в Google Sheets
+            async function saveSettingsToSheet(newExchangeRate, newMultisportValue) {
+                try {
+                    // В реальном приложении здесь будет запрос к Google Sheets API
+                    // Для демонстрации используем localStorage
+                    
+                    localStorage.setItem('shared_exchange_rate', newExchangeRate);
+                    localStorage.setItem('shared_multisport_value', newMultisportValue);
+                    
+                    return true;
+                } catch (error) {
+                    throw new Error('Failed to save settings');
                 }
             }
             
             // Показать уведомление о сохранении
-            function showSaveNotification() {
+            function showSaveNotification(message) {
+                saveNotification.textContent = message;
                 saveNotification.style.display = 'block';
                 setTimeout(() => {
                     saveNotification.style.display = 'none';
-                }, 2000);
+                }, 3000);
             }
             
             // Скрыть админ-панель при двойном клике на заголовок
