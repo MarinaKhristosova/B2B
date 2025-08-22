@@ -1,176 +1,340 @@
-    body {
-        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-        color: #333;
-        line-height: 1.6;
-        padding: 20px;
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    
-    .container {
-        max-width: 800px;
-        width: 100%;
-        background: white;
-        padding: 30px;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    }
-    
-    h1 {
-        text-align: center;
-        margin-bottom: 30px;
-        color: #2c3e50;
-        font-size: 2.2rem;
-    }
-    
-    .admin-panel {
-        background-color: #f8f9fa;
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 25px;
-        border-left: 5px solid #3498db;
-        display: none;
-    }
-    
-    .admin-panel h2 {
-        color: #3498db;
-        margin-bottom: 15px;
-        display: flex;
-        align-items: center;
-    }
-    
-    .admin-panel h2::before {
-        content: "⚙️";
-        margin-right: 10px;
-    }
-    
-    .input-group {
-        margin-bottom: 18px;
-    }
-    
-    label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: 600;
-        color: #2c3e50;
-    }
-    
-    input[type="number"], input[type="text"] {
-        width: 100%;
-        padding: 12px 15px;
-        border: 2px solid #ddd;
-        border-radius: 6px;
-        font-size: 16px;
-        transition: border-color 0.3s;
-    }
-    
-    input[type="number"]:focus, input[type="text"]:focus {
-        border-color: #3498db;
-        outline: none;
-    }
-    
-    .checkbox-group {
-        margin: 18px 0;
-        display: flex;
-        align-items: center;
-    }
-    
-    input[type="checkbox"] {
-        margin-right: 12px;
-        width: 20px;
-        height: 20px;
-        cursor: pointer;
-    }
-    
-    .checkbox-group label {
-        margin-bottom: 0;
-        cursor: pointer;
-    }
-    
-    button {
-        background: linear-gradient(to right, #2ecc71, #27ae60);
-        color: white;
-        border: none;
-        padding: 15px 25px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 18px;
-        font-weight: 600;
-        width: 100%;
-        margin-top: 15px;
-        transition: transform 0.2s, box-shadow 0.2s;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    
-    button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-    }
-    
-    button:active {
-        transform: translateY(0);
-    }
-    
-    .result {
-        margin-top: 30px;
-        padding: 25px;
-        background: linear-gradient(to right, #e8f5e9, #c8e6c9);
-        border-radius: 10px;
-        text-align: center;
-        display: none;
-        animation: fadeIn 0.5s ease;
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-    
-    .result h2 {
-        color: #2e7d32;
-        margin-bottom: 15px;
-    }
-    
-    .result-value {
-        font-size: 32px;
-        font-weight: bold;
-        color: #1b5e20;
-    }
-    
-    .section-title {
-        margin: 25px 0 20px;
-        padding-bottom: 12px;
-        border-bottom: 2px solid #eee;
-        color: #2c3e50;
-        font-size: 1.5rem;
-    }
-    
-    .admin-access {
-        text-align: center;
-        margin-top: 20px;
-        font-size: 14px;
-        color: #7f8c8d;
-    }
-    
-    .admin-access a {
-        color: #3498db;
-        text-decoration: none;
-        cursor: pointer;
-    }
-    
-    @media (max-width: 600px) {
-        .container {
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор вознаграждений Б2Б</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            line-height: 1.6;
             padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
         
         h1 {
-            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2rem;
+        }
+        
+        .admin-panel {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 5px solid #3498db;
+            display: none;
+        }
+        
+        .admin-panel h2 {
+            color: #3498db;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .admin-panel h2::before {
+            content: "⚙️";
+            margin-right: 10px;
+        }
+        
+        .input-group {
+            margin-bottom: 18px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="number"]:focus, input[type="text"]:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        .checkbox-group {
+            margin: 18px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        input[type="checkbox"] {
+            margin-right: 12px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .checkbox-group label {
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+        
+        button {
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 15px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(to right, #e8f5e9, #c8e6c9);
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .result h2 {
+            color: #2e7d32;
+            margin-bottom: 15px;
         }
         
         .result-value {
-            font-size: 28px;
+            font-size: 32px;
+            font-weight: bold;
+            color: #1b5e20;
         }
-    }
-</style>
+        
+        .section-title {
+            margin: 25px 0 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #eee;
+            color: #2c3e50;
+            font-size: 1.5rem;
+        }
+        
+        .admin-access {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        
+        .admin-access a {
+            color: #3498db;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .result-value {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Калькулятор вознаграждений Б2Б</h1>
+        
+        <div class="admin-panel" id="adminPanel">
+            <h2>Панель администратора</h2>
+            
+            <div class="input-group">
+                <label for="exchange-rate">Курс доллара к злотому (USD/PLN):</label>
+                <input type="number" id="exchange-rate" step="0.01" value="4.0" min="0">
+            </div>
+            
+            <div class="input-group">
+                <label for="multisport-value">Стоимость мультиспорта (в злотых):</label>
+                <input type="number" id="multisport-value" step="0.01" value="40.0" min="0">
+            </div>
+            
+            <div class="input-group">
+                <label for="insurance-value">Стоимость страховки (в злотых):</label>
+                <input type="number" id="insurance-value" step="0.01" value="100.0" min="0">
+            </div>
+        </div>
+        
+        <h2 class="section-title">Расчет вознаграждения</h2>
+        
+        <div class="input-group">
+            <label for="usd-amount">Сумма в долларах (USD):</label>
+            <input type="number" id="usd-amount" step="0.01" min="0" placeholder="Введите сумму в USD">
+        </div>
+        
+        <div class="checkbox-group">
+            <input type="checkbox" id="multisport">
+            <label for="multisport">Мультиспорт</label>
+        </div>
+        
+        <div class="checkbox-group">
+            <input type="checkbox" id="insurance">
+            <label for="insurance">Страховка</label>
+        </div>
+        
+        <div class="input-group">
+            <label for="additional-compensation">Дополнительная компенсация (в злотых):</label>
+            <input type="number" id="additional-compensation" step="0.01" value="0" min="0">
+        </div>
+        
+        <button id="calculate-btn">Рассчитать вознаграждение</button>
+        
+        <div class="result" id="result">
+            <h2>Общая сумма вознаграждения:</h2>
+            <div class="result-value" id="result-value">0.00 PLN</div>
+        </div>
+        
+        <div class="admin-access">
+            <a id="adminLink">Доступ для администратора</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calculateBtn = document.getElementById('calculate-btn');
+            const resultDiv = document.getElementById('result');
+            const resultValue = document.getElementById('result-value');
+            const adminPanel = document.getElementById('adminPanel');
+            const adminLink = document.getElementById('adminLink');
+            
+            // Проверка пароля для доступа к админ-панели
+            let accessGranted = localStorage.getItem('adminAccess') === 'true';
+            
+            if (accessGranted) {
+                adminPanel.style.display = 'block';
+            }
+            
+            // Обработчик для ссылки доступа к админ-панели
+            adminLink.addEventListener('click', function() {
+                const password = prompt('Введите пароль для доступа к панели администратора:');
+                if (password === 'admin123') {
+                    adminPanel.style.display = 'block';
+                    localStorage.setItem('adminAccess', 'true');
+                    accessGranted = true;
+                } else {
+                    alert('Неверный пароль!');
+                }
+            });
+            
+            // Обработчик расчета
+            calculateBtn.addEventListener('click', function() {
+                // Получаем значения из панели администратора
+                const exchangeRate = parseFloat(document.getElementById('exchange-rate').value);
+                const multisportValue = parseFloat(document.getElementById('multisport-value').value);
+                const insuranceValue = parseFloat(document.getElementById('insurance-value').value);
+                
+                // Получаем значения от пользователя
+                const usdAmount = parseFloat(document.getElementById('usd-amount').value) || 0;
+                const hasMultisport = document.getElementById('multisport').checked;
+                const hasInsurance = document.getElementById('insurance').checked;
+                const additionalCompensation = parseFloat(document.getElementById('additional-compensation').value) || 0;
+                
+                // Проверяем валидность введенных данных
+                if (isNaN(usdAmount) || usdAmount < 0) {
+                    alert('Пожалуйста, введите корректную сумму в долларах');
+                    return;
+                }
+                
+                // Выполняем расчет
+                let totalAmount = usdAmount * exchangeRate;
+                
+                if (hasMultisport) {
+                    totalAmount += multisportValue;
+                }
+                
+                if (hasInsurance) {
+                    totalAmount += insuranceValue;
+                }
+                
+                totalAmount += additionalCompensation;
+                
+                // Отображаем результат
+                resultValue.textContent = totalAmount.toFixed(2) + ' PLN';
+                resultDiv.style.display = 'block';
+            });
+            
+            // Сохранение настроек в локальное хранилище
+            const adminInputs = document.querySelectorAll('.admin-panel input');
+            adminInputs.forEach(input => {
+                // Загружаем сохраненные значения если они есть
+                const savedValue = localStorage.getItem(input.id);
+                if (savedValue) {
+                    input.value = savedValue;
+                }
+                
+                // Сохраняем значения при изменении
+                input.addEventListener('change', function() {
+                    localStorage.setItem(input.id, input.value);
+                });
+            });
+            
+            // Скрыть админ-панель при двойном клике на заголовок
+            const adminTitle = document.querySelector('.admin-panel h2');
+            if (adminTitle) {
+                adminTitle.addEventListener('dblclick', function() {
+                    adminPanel.style.display = 'none';
+                    localStorage.setItem('adminAccess', 'false');
+                    accessGranted = false;
+                });
+            }
+        });
+    </script>
+</body>
+</html>
