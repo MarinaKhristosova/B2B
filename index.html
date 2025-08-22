@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Калькулятор вознаграждений Б2Б</title>
+    <title>B2B Reward Calculator</title>
     <style>
         * {
             box-sizing: border-box;
@@ -24,7 +24,7 @@
         }
         
         .container {
-            max-width: 800px;
+            max-width: 900px;
             width: 100%;
             background: white;
             padding: 30px;
@@ -137,6 +137,38 @@
             animation: fadeIn 0.5s ease;
         }
         
+        .calculation-details {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f1f8e9;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 14px;
+        }
+        
+        .calculation-details h3 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .calculation-details ul {
+            padding-left: 20px;
+        }
+        
+        .calculation-details li {
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .calculation-details .total {
+            border-top: 1px solid #a5d6a7;
+            margin-top: 10px;
+            padding-top: 10px;
+            font-weight: bold;
+        }
+        
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -191,58 +223,60 @@
 </head>
 <body>
     <div class="container">
-        <h1>Калькулятор вознаграждений Б2Б</h1>
+        <h1>B2B Reward Calculator</h1>
         
         <div class="admin-panel" id="adminPanel">
-            <h2>Панель администратора</h2>
+            <h2>Administrator Panel</h2>
             
             <div class="input-group">
-                <label for="exchange-rate">Курс доллара к злотому (USD/PLN):</label>
+                <label for="exchange-rate">USD to PLN Exchange Rate:</label>
                 <input type="number" id="exchange-rate" step="0.01" value="4.0" min="0">
             </div>
             
             <div class="input-group">
-                <label for="multisport-value">Стоимость мультиспорта (в злотых):</label>
+                <label for="multisport-value">Multisport Value (in PLN):</label>
                 <input type="number" id="multisport-value" step="0.01" value="40.0" min="0">
-            </div>
-            
-            <div class="input-group">
-                <label for="insurance-value">Стоимость страховки (в злотых):</label>
-                <input type="number" id="insurance-value" step="0.01" value="100.0" min="0">
             </div>
         </div>
         
-        <h2 class="section-title">Расчет вознаграждения</h2>
+        <h2 class="section-title">Reward Calculation</h2>
         
         <div class="input-group">
-            <label for="usd-amount">Сумма в долларах (USD):</label>
-            <input type="number" id="usd-amount" step="0.01" min="0" placeholder="Введите сумму в USD">
+            <label for="usd-amount">Amount in USD:</label>
+            <input type="number" id="usd-amount" step="0.01" min="0" placeholder="Enter amount in USD">
+        </div>
+        
+        <div class="input-group">
+            <label for="additional-usd">Additional Reward (in USD):</label>
+            <input type="number" id="additional-usd" step="0.01" value="0" min="0" placeholder="Enter additional amount in USD">
         </div>
         
         <div class="checkbox-group">
             <input type="checkbox" id="multisport">
-            <label for="multisport">Мультиспорт</label>
-        </div>
-        
-        <div class="checkbox-group">
-            <input type="checkbox" id="insurance">
-            <label for="insurance">Страховка</label>
+            <label for="multisport">Multisport</label>
         </div>
         
         <div class="input-group">
-            <label for="additional-compensation">Дополнительная компенсация (в злотых):</label>
-            <input type="number" id="additional-compensation" step="0.01" value="0" min="0">
+            <label for="additional-compensation">Additional Compensation (in PLN):</label>
+            <input type="number" id="additional-compensation" step="0.01" value="0" min="0" placeholder="Enter additional compensation in PLN">
         </div>
         
-        <button id="calculate-btn">Рассчитать вознаграждение</button>
+        <button id="calculate-btn">Calculate Reward</button>
         
         <div class="result" id="result">
-            <h2>Общая сумма вознаграждения:</h2>
+            <h2>Total Reward Amount:</h2>
             <div class="result-value" id="result-value">0.00 PLN</div>
+            
+            <div class="calculation-details" id="calculation-details">
+                <h3>Calculation Details:</h3>
+                <ul id="details-list">
+                    <!-- Calculation details will be inserted here -->
+                </ul>
+            </div>
         </div>
         
         <div class="admin-access">
-            <a id="adminLink">Доступ для администратора</a>
+            <a id="adminLink">Administrator Access</a>
         </div>
     </div>
 
@@ -253,6 +287,7 @@
             const resultValue = document.getElementById('result-value');
             const adminPanel = document.getElementById('adminPanel');
             const adminLink = document.getElementById('adminLink');
+            const detailsList = document.getElementById('details-list');
             
             // Проверка пароля для доступа к админ-панели
             let accessGranted = localStorage.getItem('adminAccess') === 'true';
@@ -263,13 +298,13 @@
             
             // Обработчик для ссылки доступа к админ-панели
             adminLink.addEventListener('click', function() {
-                const password = prompt('Введите пароль для доступа к панели администратора:');
+                const password = prompt('Enter password for administrator access:');
                 if (password === 'admin123') {
                     adminPanel.style.display = 'block';
                     localStorage.setItem('adminAccess', 'true');
                     accessGranted = true;
                 } else {
-                    alert('Неверный пароль!');
+                    alert('Incorrect password!');
                 }
             });
             
@@ -278,37 +313,74 @@
                 // Получаем значения из панели администратора
                 const exchangeRate = parseFloat(document.getElementById('exchange-rate').value);
                 const multisportValue = parseFloat(document.getElementById('multisport-value').value);
-                const insuranceValue = parseFloat(document.getElementById('insurance-value').value);
                 
                 // Получаем значения от пользователя
                 const usdAmount = parseFloat(document.getElementById('usd-amount').value) || 0;
+                const additionalUSD = parseFloat(document.getElementById('additional-usd').value) || 0;
                 const hasMultisport = document.getElementById('multisport').checked;
-                const hasInsurance = document.getElementById('insurance').checked;
                 const additionalCompensation = parseFloat(document.getElementById('additional-compensation').value) || 0;
                 
                 // Проверяем валидность введенных данных
                 if (isNaN(usdAmount) || usdAmount < 0) {
-                    alert('Пожалуйста, введите корректную сумму в долларах');
+                    alert('Please enter a valid amount in USD');
                     return;
                 }
                 
                 // Выполняем расчет
-                let totalAmount = usdAmount * exchangeRate;
+                const mainAmountPLN = usdAmount * exchangeRate;
+                const additionalUSDinPLN = additionalUSD * exchangeRate;
+                const totalUSD = usdAmount + additionalUSD;
+                
+                let totalAmount = mainAmountPLN + additionalUSDinPLN;
                 
                 if (hasMultisport) {
                     totalAmount += multisportValue;
-                }
-                
-                if (hasInsurance) {
-                    totalAmount += insuranceValue;
                 }
                 
                 totalAmount += additionalCompensation;
                 
                 // Отображаем результат
                 resultValue.textContent = totalAmount.toFixed(2) + ' PLN';
+                
+                // Показываем детали расчета
+                detailsList.innerHTML = '';
+                
+                if (usdAmount > 0) {
+                    addDetail(`Main amount: ${usdAmount} USD × ${exchangeRate}`, mainAmountPLN.toFixed(2) + ' PLN');
+                }
+                
+                if (additionalUSD > 0) {
+                    addDetail(`Additional reward: ${additionalUSD} USD × ${exchangeRate}`, additionalUSDinPLN.toFixed(2) + ' PLN');
+                }
+                
+                if (hasMultisport) {
+                    addDetail('Multisport', multisportValue.toFixed(2) + ' PLN');
+                }
+                
+                if (additionalCompensation > 0) {
+                    addDetail('Additional compensation', additionalCompensation.toFixed(2) + ' PLN');
+                }
+                
+                addDetail('TOTAL', totalAmount.toFixed(2) + ' PLN', 'total');
+                
                 resultDiv.style.display = 'block';
             });
+            
+            // Функция для добавления деталей расчета
+            function addDetail(description, value, className = '') {
+                const li = document.createElement('li');
+                if (className) li.className = className;
+                
+                const descSpan = document.createElement('span');
+                descSpan.textContent = description;
+                
+                const valueSpan = document.createElement('span');
+                valueSpan.textContent = value;
+                
+                li.appendChild(descSpan);
+                li.appendChild(valueSpan);
+                detailsList.appendChild(li);
+            }
             
             // Сохранение настроек в локальное хранилище
             const adminInputs = document.querySelectorAll('.admin-panel input');
