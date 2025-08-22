@@ -39,6 +39,59 @@
             font-size: 2.2rem;
         }
         
+        .config-panel {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 5px solid #4caf50;
+        }
+        
+        .config-panel h2 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .config-panel h2::before {
+            content: "⚙️";
+            margin-right: 10px;
+        }
+        
+        .config-values {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .config-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #c8e6c9;
+        }
+        
+        .config-item h3 {
+            color: #2e7d32;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .config-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1b5e20;
+        }
+        
+        .config-note {
+            font-size: 12px;
+            color: #666;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
         .input-group {
             margin-bottom: 18px;
         }
@@ -175,45 +228,11 @@
             font-size: 1.5rem;
         }
         
-        .current-settings {
-            background: #e3f2fd;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            text-align: center;
-        }
-        
-        .current-settings span {
-            font-weight: bold;
-            color: #1976d2;
-        }
-        
-        .no-settings {
-            background: #fff3cd;
-            color: #856404;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            text-align: center;
-            border: 1px solid #ffeaa7;
-        }
-        
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 3px solid #3498db;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
+            .config-values {
+                grid-template-columns: 1fr;
+            }
+            
             .container {
                 padding: 20px;
             }
@@ -225,6 +244,10 @@
             .result-value {
                 font-size: 28px;
             }
+            
+            .config-value {
+                font-size: 20px;
+            }
         }
     </style>
 </head>
@@ -232,9 +255,19 @@
     <div class="container">
         <h1>B2B Reward Calculator</h1>
         
-        <div id="settings-display">
-            <div class="no-settings">
-                <span class="loading"></span> Loading settings from Google Sheets...
+        <div class="config-panel">
+            <h2>Current Configuration</h2>
+            <div class="config-values">
+                <div class="config-item">
+                    <h3>USD to PLN Exchange Rate</h3>
+                    <div class="config-value" id="current-exchange-rate">3.654</div>
+                    <div class="config-note">To change: Edit the JavaScript code</div>
+                </div>
+                <div class="config-item">
+                    <h3>Multisport Value</h3>
+                    <div class="config-value" id="current-multisport">154.65 PLN</div>
+                    <div class="config-note">To change: Edit the JavaScript code</div>
+                </div>
             </div>
         </div>
         
@@ -275,129 +308,35 @@
         </div>
         
         <div style="text-align: center; margin-top: 20px; font-size: 14px; color: #7f8c8d;">
-            Settings are managed centrally via Google Sheets
+            💡 To update rates: Edit the values in the JavaScript code (lines 265-266)
         </div>
     </div>
 
     <script>
-        // Конфигурация Google Sheets
-        const GOOGLE_SHEET_ID = '1F64ARXFmkkeTgGy_j5K0ilnfkvn1ddU1x1Xkx2yAagA';
-        const GOOGLE_SHEET_NAME = 'settings';
-        const GOOGLE_APIS_KEY = 'AIzaSyBF6d2vj4T39k5BaT8s7kfWQfzLpggsNQI';
+        // ==================== CONFIGURATION SETTINGS ====================
+        // 👇 EDIT THESE VALUES TO UPDATE THE CALCULATOR 👇
         
-        // Глобальные переменные для настроек
-        let exchangeRate = null;
-        let multisportValue = null;
-        let lastUpdateTime = 0;
+        const EXCHANGE_RATE = 3.654;      // Change this to update USD to PLN rate
+        const MULTISPORT_VALUE = 154.65;  // Change this to update multisport value
         
-        // Функция для загрузки настроек из Google Sheets
-        async function loadSettingsFromGoogleSheets() {
-            try {
-                const url = `https://sheets.googleapis.com/v4/spreadsheets/${GOOGLE_SHEET_ID}/values/${GOOGLE_SHEET_NAME}?key=${GOOGLE_APIS_KEY}`;
-                const response = await fetch(url);
-                
-                if (!response.ok) {
-                    throw new Error('Failed to fetch from Google Sheets');
-                }
-                
-                const data = await response.json();
-                
-                if (data.values && data.values.length > 1) {
-                    const settings = {};
-                    
-                    for (let i = 1; i < data.values.length; i++) {
-                        const row = data.values[i];
-                        if (row.length >= 2) {
-                            settings[row[0]] = row[1];
-                        }
-                    }
-                    
-                    if (settings.exchange_rate) {
-                        exchangeRate = parseFloat(settings.exchange_rate);
-                        console.log('Exchange rate loaded:', exchangeRate);
-                    }
-                    
-                    if (settings.multisport_value) {
-                        multisportValue = parseFloat(settings.multisport_value);
-                        console.log('Multisport value loaded:', multisportValue);
-                    }
-                    
-                    return true;
-                }
-                
-            } catch (error) {
-                console.error('Error loading from Google Sheets:', error);
-                // Показываем сообщение об ошибке
-                document.getElementById('settings-display').innerHTML = `
-                    <div class="no-settings">
-                        ⚠️ Error loading settings from Google Sheets. Please check the connection.
-                    </div>
-                `;
-            }
-            
-            return false;
-        }
+        // ==================== END OF CONFIGURATION ======================
         
-        // Функция для проверки обновлений
-        async function checkForUpdates() {
-            const now = Date.now();
-            if (now - lastUpdateTime < 30000) {
-                return;
-            }
-            
-            lastUpdateTime = now;
-            
-            try {
-                await loadSettingsFromGoogleSheets();
-                updateSettingsDisplay();
-                
-            } catch (error) {
-                console.log('Error checking for updates:', error);
-            }
-        }
+        // Глобальные переменные
+        let exchangeRate = EXCHANGE_RATE;
+        let multisportValue = MULTISPORT_VALUE;
         
-        // Функция обновления отображения настроек
-        function updateSettingsDisplay() {
-            const settingsDisplay = document.getElementById('settings-display');
-            
-            if (exchangeRate !== null && multisportValue !== null) {
-                settingsDisplay.innerHTML = `
-                    <div class="current-settings">
-                        📊 Current Settings from Google Sheets:<br>
-                        Exchange Rate: <span>${exchangeRate}</span> | 
-                        Multisport: <span>${multisportValue} PLN</span>
-                        <button onclick="checkForUpdates()" style="margin-left: 10px; padding: 5px 10px; font-size: 12px;">🔄 Check for Updates</button>
-                    </div>
-                `;
-            } else {
-                settingsDisplay.innerHTML = `
-                    <div class="no-settings">
-                        ⚠️ No settings configured yet. Please update Google Sheets.
-                    </div>
-                `;
-            }
-        }
+        // Обновляем отображение текущих настроек
+        document.getElementById('current-exchange-rate').textContent = exchangeRate;
+        document.getElementById('current-multisport').textContent = multisportValue + ' PLN';
         
-        document.addEventListener('DOMContentLoaded', async function() {
+        document.addEventListener('DOMContentLoaded', function() {
             const calculateBtn = document.getElementById('calculate-btn');
             const resultDiv = document.getElementById('result');
             const resultValue = document.getElementById('result-value');
             const detailsList = document.getElementById('details-list');
             
-            // Загрузка начальных настроек из Google Sheets
-            await loadSettingsFromGoogleSheets();
-            updateSettingsDisplay();
-            
-            // Запускаем периодическую проверку обновлений каждые 2 минуты
-            setInterval(checkForUpdates, 120000);
-            
             // Обработчик расчета
             calculateBtn.addEventListener('click', function() {
-                if (exchangeRate === null || multisportValue === null) {
-                    alert('Please wait - settings are loading from Google Sheets...');
-                    return;
-                }
-                
                 const usdAmount = parseFloat(document.getElementById('usd-amount').value) || 0;
                 const additionalUSD = parseFloat(document.getElementById('additional-usd').value) || 0;
                 const hasMultisport = document.getElementById('multisport').checked;
@@ -455,7 +394,19 @@
             }
         });
         
-        window.checkForUpdates = checkForUpdates;
+        // Функция для обновления настроек (если нужно изменить через консоль)
+        window.updateSettings = function(newExchangeRate, newMultisportValue) {
+            exchangeRate = newExchangeRate;
+            multisportValue = newMultisportValue;
+            
+            // Обновляем отображение
+            document.getElementById('current-exchange-rate').textContent = exchangeRate;
+            document.getElementById('current-multisport').textContent = multisportValue + ' PLN';
+            
+            console.log('Settings updated:');
+            console.log('Exchange Rate:', exchangeRate);
+            console.log('Multisport Value:', multisportValue);
+        };
     </script>
 </body>
 </html>
