@@ -196,12 +196,21 @@
             padding: 4px 0;
         }
         
+        .calculation-details .negative {
+            color: #d32f2f;
+        }
+        
         .calculation-details .total {
             border-top: 2px solid #a5d6a7;
             margin-top: 10px;
             padding-top: 10px;
             font-weight: bold;
             font-size: 16px;
+        }
+        
+        .calculation-details .negative-total {
+            border-top: 2px solid #ffcdd2;
+            color: #d32f2f;
         }
         
         @keyframes fadeIn {
@@ -218,6 +227,10 @@
             font-size: 32px;
             font-weight: bold;
             color: #1b5e20;
+        }
+        
+        .result-value.negative {
+            color: #d32f2f;
         }
         
         .section-title {
@@ -261,10 +274,12 @@
                 <div class="config-item">
                     <h3>USD to PLN Exchange Rate</h3>
                     <div class="config-value" id="current-exchange-rate">3.654</div>
+                    <div class="config-note">To change: Edit the JavaScript code</div>
                 </div>
                 <div class="config-item">
                     <h3>Multisport Value</h3>
                     <div class="config-value" id="current-multisport">154.65 PLN</div>
+                    <div class="config-note">To change: Edit the JavaScript code</div>
                 </div>
             </div>
         </div>
@@ -273,17 +288,17 @@
         
         <div class="input-group">
             <label for="usd-amount">Amount in USD:</label>
-            <input type="number" id="usd-amount" step="0.01" min="0" placeholder="Enter amount in USD">
+            <input type="number" id="usd-amount" step="0.01" placeholder="Enter amount in USD">
         </div>
         
         <div class="input-group">
-            <label for="additional-usd">Additional Compensation (in USD):</label>
-            <input type="number" id="additional-usd" step="0.01" value="0" min="0" placeholder="Enter additional amount in USD">
+            <label for="additional-usd">Additional Reward (in USD):</label>
+            <input type="number" id="additional-usd" step="0.01" value="0" placeholder="Enter additional amount in USD">
         </div>
         
         <div class="input-group">
             <label for="additional-compensation">Additional Compensation (in PLN):</label>
-            <input type="number" id="additional-compensation" step="0.01" value="0" min="0" placeholder="Enter additional compensation in PLN">
+            <input type="number" id="additional-compensation" step="0.01" value="0" placeholder="Enter additional compensation in PLN">
         </div>
         
         <div class="checkbox-group">
@@ -306,7 +321,7 @@
         </div>
         
         <div style="text-align: center; margin-top: 20px; font-size: 14px; color: #7f8c8d;">
-            💡 To update rates: Edit the values in the JavaScript code (lines 265-266)
+            💡 To update rates: Edit the values in the JavaScript code
         </div>
     </div>
 
@@ -340,11 +355,6 @@
                 const hasMultisport = document.getElementById('multisport').checked;
                 const additionalCompensation = parseFloat(document.getElementById('additional-compensation').value) || 0;
                 
-                if (isNaN(usdAmount) || usdAmount < 0) {
-                    alert('Please enter a valid amount in USD');
-                    return;
-                }
-                
                 calculateAndDisplayResult(usdAmount, additionalUSD, hasMultisport, additionalCompensation);
             });
             
@@ -361,29 +371,49 @@
                 
                 totalAmount += additionalCompensation;
                 
-                resultValue.textContent = totalAmount.toFixed(2) + ' PLN';
+                // Отображаем результат
+                resultValue.textContent = Math.abs(totalAmount).toFixed(2) + ' PLN';
+                if (totalAmount < 0) {
+                    resultValue.classList.add('negative');
+                    resultValue.textContent = '-' + resultValue.textContent;
+                } else {
+                    resultValue.classList.remove('negative');
+                }
+                
+                // Показываем детали расчета (включая отрицательные значения)
                 detailsList.innerHTML = '';
                 
-                if (usdAmount > 0) {
-                    addDetail(`Main amount: ${usdAmount} USD × ${exchangeRate}`, mainAmountPLN.toFixed(2) + ' PLN');
+                if (usdAmount !== 0) {
+                    const amount = usdAmount * exchangeRate;
+                    addDetail(`Main amount: ${usdAmount} USD × ${exchangeRate}`, formatCurrency(amount), amount < 0 ? 'negative' : '');
                 }
                 
-                if (additionalUSD > 0) {
-                    addDetail(`Additional reward: ${additionalUSD} USD × ${exchangeRate}`, additionalUSDinPLN.toFixed(2) + ' PLN');
+                if (additionalUSD !== 0) {
+                    const amount = additionalUSD * exchangeRate;
+                    addDetail(`Additional reward: ${additionalUSD} USD × ${exchangeRate}`, formatCurrency(amount), amount < 0 ? 'negative' : '');
                 }
                 
-                if (additionalCompensation > 0) {
-                    addDetail('Additional compensation', additionalCompensation.toFixed(2) + ' PLN');
+                if (additionalCompensation !== 0) {
+                    addDetail('Additional compensation', formatCurrency(additionalCompensation), additionalCompensation < 0 ? 'negative' : '');
                 }
                 
                 if (hasMultisport) {
-                    addDetail('Multisport', multisportValue.toFixed(2) + ' PLN');
+                    addDetail('Multisport', formatCurrency(multisportValue));
                 }
                 
-                addDetail('TOTAL', totalAmount.toFixed(2) + ' PLN', 'total');
+                addDetail('TOTAL', formatCurrency(totalAmount), totalAmount < 0 ? 'negative-total' : 'total');
                 resultDiv.style.display = 'block';
             }
             
+            // Функция для форматирования валюты (отображает отрицательные значения)
+            function formatCurrency(amount) {
+                if (amount < 0) {
+                    return '- ' + Math.abs(amount).toFixed(2) + ' PLN';
+                }
+                return amount.toFixed(2) + ' PLN';
+            }
+            
+            // Функция для добавления деталей расчета
             function addDetail(description, value, className = '') {
                 const li = document.createElement('li');
                 if (className) li.className = className;
