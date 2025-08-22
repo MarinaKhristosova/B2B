@@ -154,19 +154,22 @@
         
         .calculation-details ul {
             padding-left: 20px;
+            list-style: none;
         }
         
         .calculation-details li {
             margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
+            padding: 4px 0;
         }
         
         .calculation-details .total {
-            border-top: 1px solid #a5d6a7;
+            border-top: 2px solid #a5d6a7;
             margin-top: 10px;
             padding-top: 10px;
             font-weight: bold;
+            font-size: 16px;
         }
         
         @keyframes fadeIn {
@@ -206,6 +209,19 @@
             cursor: pointer;
         }
         
+        .save-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #2ecc71;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+        }
+        
         @media (max-width: 600px) {
             .container {
                 padding: 20px;
@@ -222,6 +238,8 @@
     </style>
 </head>
 <body>
+    <div class="save-notification" id="saveNotification">Settings saved!</div>
+    
     <div class="container">
         <h1>B2B Reward Calculator</h1>
         
@@ -251,14 +269,14 @@
             <input type="number" id="additional-usd" step="0.01" value="0" min="0" placeholder="Enter additional amount in USD">
         </div>
         
-        <div class="checkbox-group">
-            <input type="checkbox" id="multisport">
-            <label for="multisport">Multisport</label>
-        </div>
-        
         <div class="input-group">
             <label for="additional-compensation">Additional Compensation (in PLN):</label>
             <input type="number" id="additional-compensation" step="0.01" value="0" min="0" placeholder="Enter additional compensation in PLN">
+        </div>
+        
+        <div class="checkbox-group">
+            <input type="checkbox" id="multisport">
+            <label for="multisport">Multisport</label>
         </div>
         
         <button id="calculate-btn">Calculate Reward</button>
@@ -288,8 +306,12 @@
             const adminPanel = document.getElementById('adminPanel');
             const adminLink = document.getElementById('adminLink');
             const detailsList = document.getElementById('details-list');
+            const saveNotification = document.getElementById('saveNotification');
             
-            // Проверка пароля для доступа к админ-панели
+            // Загрузка сохраненных значений при запуске
+            loadSavedSettings();
+            
+            // Проверка доступа к админ-панели
             let accessGranted = localStorage.getItem('adminAccess') === 'true';
             
             if (accessGranted) {
@@ -329,7 +351,6 @@
                 // Выполняем расчет
                 const mainAmountPLN = usdAmount * exchangeRate;
                 const additionalUSDinPLN = additionalUSD * exchangeRate;
-                const totalUSD = usdAmount + additionalUSD;
                 
                 let totalAmount = mainAmountPLN + additionalUSDinPLN;
                 
@@ -353,12 +374,12 @@
                     addDetail(`Additional reward: ${additionalUSD} USD × ${exchangeRate}`, additionalUSDinPLN.toFixed(2) + ' PLN');
                 }
                 
-                if (hasMultisport) {
-                    addDetail('Multisport', multisportValue.toFixed(2) + ' PLN');
-                }
-                
                 if (additionalCompensation > 0) {
                     addDetail('Additional compensation', additionalCompensation.toFixed(2) + ' PLN');
+                }
+                
+                if (hasMultisport) {
+                    addDetail('Multisport', multisportValue.toFixed(2) + ' PLN');
                 }
                 
                 addDetail('TOTAL', totalAmount.toFixed(2) + ' PLN', 'total');
@@ -382,20 +403,36 @@
                 detailsList.appendChild(li);
             }
             
-            // Сохранение настроек в локальное хранилище
+            // Сохранение настроек при изменении
             const adminInputs = document.querySelectorAll('.admin-panel input');
             adminInputs.forEach(input => {
-                // Загружаем сохраненные значения если они есть
-                const savedValue = localStorage.getItem(input.id);
-                if (savedValue) {
-                    input.value = savedValue;
-                }
-                
-                // Сохраняем значения при изменении
                 input.addEventListener('change', function() {
                     localStorage.setItem(input.id, input.value);
+                    showSaveNotification();
                 });
             });
+            
+            // Загрузка сохраненных настроек
+            function loadSavedSettings() {
+                const exchangeRate = localStorage.getItem('exchange-rate');
+                const multisportValue = localStorage.getItem('multisport-value');
+                
+                if (exchangeRate) {
+                    document.getElementById('exchange-rate').value = exchangeRate;
+                }
+                
+                if (multisportValue) {
+                    document.getElementById('multisport-value').value = multisportValue;
+                }
+            }
+            
+            // Показать уведомление о сохранении
+            function showSaveNotification() {
+                saveNotification.style.display = 'block';
+                setTimeout(() => {
+                    saveNotification.style.display = 'none';
+                }, 2000);
+            }
             
             // Скрыть админ-панель при двойном клике на заголовок
             const adminTitle = document.querySelector('.admin-panel h2');
