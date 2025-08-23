@@ -274,13 +274,14 @@
                 <div class="config-item">
                     <h3>USD to PLN Exchange Rate</h3>
                     <div class="config-value" id="current-exchange-rate">3.654</div>
-                    <div class="config-note">To change: Edit the JavaScript code</div>
                 </div>
                 <div class="config-item">
                     <h3>Multisport Value</h3>
                     <div class="config-value" id="current-multisport">154.65 PLN</div>
-                    <div class="config-note">To change: Edit the JavaScript code</div>
                 </div>
+            </div>
+            <div class="config-note">
+                To change these values, edit the EXCHANGE_RATE and MULTISPORT_VALUE variables in the JavaScript code below, then refresh the page.
             </div>
         </div>
         
@@ -321,7 +322,7 @@
         </div>
         
         <div style="text-align: center; margin-top: 20px; font-size: 14px; color: #7f8c8d;">
-            💡 To update rates: Edit the values in the JavaScript code
+            💡 To update rates: Edit the values in the JavaScript code below and refresh the page
         </div>
     </div>
 
@@ -338,15 +339,21 @@
         let exchangeRate = EXCHANGE_RATE;
         let multisportValue = MULTISPORT_VALUE;
         
-        // Обновляем отображение текущих настроек
-        document.getElementById('current-exchange-rate').textContent = exchangeRate;
-        document.getElementById('current-multisport').textContent = multisportValue + ' PLN';
+        // Функция для обновления отображения конфигурации
+        function updateConfigDisplay() {
+            document.getElementById('current-exchange-rate').textContent = exchangeRate;
+            document.getElementById('current-multisport').textContent = multisportValue + ' PLN';
+        }
         
+        // Инициализация при загрузке
         document.addEventListener('DOMContentLoaded', function() {
             const calculateBtn = document.getElementById('calculate-btn');
             const resultDiv = document.getElementById('result');
             const resultValue = document.getElementById('result-value');
             const detailsList = document.getElementById('details-list');
+            
+            // Обновляем отображение конфигурации
+            updateConfigDisplay();
             
             // Обработчик расчета
             calculateBtn.addEventListener('click', function() {
@@ -422,18 +429,18 @@
             }
         });
         
-        // Функция для обновления настроек (если нужно изменить через консоль)
+        // Функция для обновления настроек через консоль браузера
         window.updateSettings = function(newExchangeRate, newMultisportValue) {
             exchangeRate = newExchangeRate;
             multisportValue = newMultisportValue;
             
-            // Обновляем отображение
-            document.getElementById('current-exchange-rate').textContent = exchangeRate;
-            document.getElementById('current-multisport').textContent = multisportValue + ' PLN';
+            // Обновляем отображение конфигурации
+            updateConfigDisplay();
             
             console.log('Settings updated:');
             console.log('Exchange Rate:', exchangeRate);
             console.log('Multisport Value:', multisportValue);
+            console.log('Note: These changes are temporary. To make them permanent, edit the EXCHANGE_RATE and MULTISPORT_VALUE variables in the code.');
         };
     </script>
 </body>
