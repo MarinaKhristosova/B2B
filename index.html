@@ -52,7 +52,6 @@
             margin-bottom: 15px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
         }
         
         .config-panel h2::before {
@@ -95,11 +94,11 @@
             background: #4caf50;
             color: white;
             border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
+            padding: 4px 8px;
+            border-radius: 3px;
             cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 11px;
+            font-weight: 500;
             transition: background 0.3s;
         }
         
@@ -131,8 +130,8 @@
         }
         
         .edit-form-buttons button {
-            padding: 6px 12px;
-            font-size: 12px;
+            padding: 4px 8px;
+            font-size: 11px;
             margin-top: 0;
             width: auto;
         }
@@ -322,9 +321,7 @@
         <h1>B2B Reward Calculator</h1>
         
         <div class="config-panel">
-            <h2>
-                Current Configuration
-            </h2>
+            <h2>Current Configuration</h2>
             <div class="config-values">
                 <div class="config-item">
                     <h3>
@@ -443,15 +440,6 @@
             } else {
                 alert('Please enter a valid number for multisport value');
             }
-        }
-        
-        function toggleEditMode() {
-            const editButtons = document.querySelectorAll('.config-edit-btn');
-            editButtons.forEach(btn => {
-                if (btn.textContent === 'Edit') {
-                    btn.textContent = 'Edit';
-                }
-            });
         }
         
         // Загрузка сохраненных настроек
