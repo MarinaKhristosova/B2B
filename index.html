@@ -52,6 +52,7 @@
             margin-bottom: 15px;
             display: flex;
             align-items: center;
+            justify-content: space-between;
         }
         
         .config-panel h2::before {
@@ -71,25 +72,77 @@
             padding: 15px;
             border-radius: 8px;
             border: 2px solid #c8e6c9;
+            position: relative;
         }
         
         .config-item h3 {
             color: #2e7d32;
             margin-bottom: 8px;
             font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         .config-value {
             font-size: 24px;
             font-weight: bold;
             color: #1b5e20;
+            margin: 10px 0;
         }
         
-        .config-note {
+        .config-edit-btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
             font-size: 12px;
-            color: #666;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        .config-edit-btn:hover {
+            background: #45a049;
+        }
+        
+        .edit-form {
+            display: none;
             margin-top: 10px;
-            font-style: italic;
+            padding: 10px;
+            background: #f8fff8;
+            border-radius: 6px;
+            border: 1px solid #c8e6c9;
+        }
+        
+        .edit-form input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 8px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .edit-form-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .edit-form-buttons button {
+            padding: 6px 12px;
+            font-size: 12px;
+            margin-top: 0;
+            width: auto;
+        }
+        
+        .btn-save {
+            background: #4caf50;
+        }
+        
+        .btn-cancel {
+            background: #f44336;
         }
         
         .input-group {
@@ -269,15 +322,38 @@
         <h1>B2B Reward Calculator</h1>
         
         <div class="config-panel">
-            <h2>Current Configuration</h2>
+            <h2>
+                Current Configuration
+                <button class="config-edit-btn" onclick="toggleEditMode()">Edit Settings</button>
+            </h2>
             <div class="config-values">
                 <div class="config-item">
-                    <h3>USD to PLN Exchange Rate</h3>
+                    <h3>
+                        USD to PLN Exchange Rate
+                        <button class="config-edit-btn" onclick="showEditForm('exchange-rate')">Edit</button>
+                    </h3>
                     <div class="config-value" id="current-exchange-rate">3.654</div>
+                    <div class="edit-form" id="edit-exchange-rate">
+                        <input type="number" id="edit-exchange-rate-input" step="0.001" placeholder="New exchange rate">
+                        <div class="edit-form-buttons">
+                            <button class="btn-save" onclick="saveExchangeRate()">Save</button>
+                            <button class="btn-cancel" onclick="hideEditForm('exchange-rate')">Cancel</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="config-item">
-                    <h3>Multisport Value</h3>
+                    <h3>
+                        Multisport Value
+                        <button class="config-edit-btn" onclick="showEditForm('multisport')">Edit</button>
+                    </h3>
                     <div class="config-value" id="current-multisport">154.65 PLN</div>
+                    <div class="edit-form" id="edit-multisport">
+                        <input type="number" id="edit-multisport-input" step="0.01" placeholder="New multisport value">
+                        <div class="edit-form-buttons">
+                            <button class="btn-save" onclick="saveMultisportValue()">Save</button>
+                            <button class="btn-cancel" onclick="hideEditForm('multisport')">Cancel</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -317,29 +393,79 @@
                 </ul>
             </div>
         </div>
-        
-        <div style="text-align: center; margin-top: 20px; font-size: 14px; color: #7f8c8d;">
-            💡 To update rates: Edit the values in the JavaScript code below and refresh the page
-        </div>
     </div>
 
     <script>
-        // ==================== CONFIGURATION SETTINGS ====================
-        // 👇 EDIT THESE VALUES TO UPDATE THE CALCULATOR 👇
-        
-        const EXCHANGE_RATE = 3.654;      // Change this to update USD to PLN rate
-        const MULTISPORT_VALUE = 154.65;  // Change this to update multisport value
-        
-        // ==================== END OF CONFIGURATION ======================
-        
         // Глобальные переменные
-        let exchangeRate = EXCHANGE_RATE;
-        let multisportValue = MULTISPORT_VALUE;
+        let exchangeRate = 3.654;
+        let multisportValue = 154.65;
         
         // Функция для обновления отображения конфигурации
         function updateConfigDisplay() {
             document.getElementById('current-exchange-rate').textContent = exchangeRate;
             document.getElementById('current-multisport').textContent = multisportValue + ' PLN';
+        }
+        
+        // Функции для редактирования настроек
+        function showEditForm(type) {
+            document.getElementById(`edit-${type}`).style.display = 'block';
+            if (type === 'exchange-rate') {
+                document.getElementById('edit-exchange-rate-input').value = exchangeRate;
+            } else {
+                document.getElementById('edit-multisport-input').value = multisportValue;
+            }
+        }
+        
+        function hideEditForm(type) {
+            document.getElementById(`edit-${type}`).style.display = 'none';
+        }
+        
+        function saveExchangeRate() {
+            const newRate = parseFloat(document.getElementById('edit-exchange-rate-input').value);
+            if (!isNaN(newRate) && newRate > 0) {
+                exchangeRate = newRate;
+                updateConfigDisplay();
+                hideEditForm('exchange-rate');
+                // Сохраняем в localStorage
+                localStorage.setItem('b2b_exchange_rate', exchangeRate);
+            } else {
+                alert('Please enter a valid positive number for exchange rate');
+            }
+        }
+        
+        function saveMultisportValue() {
+            const newValue = parseFloat(document.getElementById('edit-multisport-input').value);
+            if (!isNaN(newValue) && newValue >= 0) {
+                multisportValue = newValue;
+                updateConfigDisplay();
+                hideEditForm('multisport');
+                // Сохраняем в localStorage
+                localStorage.setItem('b2b_multisport_value', multisportValue);
+            } else {
+                alert('Please enter a valid number for multisport value');
+            }
+        }
+        
+        function toggleEditMode() {
+            const editButtons = document.querySelectorAll('.config-edit-btn');
+            editButtons.forEach(btn => {
+                if (btn.textContent === 'Edit') {
+                    btn.textContent = 'Edit';
+                }
+            });
+        }
+        
+        // Загрузка сохраненных настроек
+        function loadSavedSettings() {
+            const savedRate = localStorage.getItem('b2b_exchange_rate');
+            const savedMultisport = localStorage.getItem('b2b_multisport_value');
+            
+            if (savedRate) {
+                exchangeRate = parseFloat(savedRate);
+            }
+            if (savedMultisport) {
+                multisportValue = parseFloat(savedMultisport);
+            }
         }
         
         // Инициализация при загрузке
@@ -348,6 +474,9 @@
             const resultDiv = document.getElementById('result');
             const resultValue = document.getElementById('result-value');
             const detailsList = document.getElementById('details-list');
+            
+            // Загружаем сохраненные настройки
+            loadSavedSettings();
             
             // Обновляем отображение конфигурации
             updateConfigDisplay();
@@ -384,7 +513,7 @@
                     resultValue.classList.remove('negative');
                 }
                 
-                // Показываем детали расчета (включая отрицательные значения)
+                // Показываем детали расчета
                 detailsList.innerHTML = '';
                 
                 if (usdAmount !== 0) {
@@ -409,7 +538,7 @@
                 resultDiv.style.display = 'block';
             }
             
-            // Функция для форматирования валюты (отображает отрицательные значения)
+            // Функция для форматирования валюты
             function formatCurrency(amount) {
                 if (amount < 0) {
                     return '- ' + Math.abs(amount).toFixed(2) + ' PLN';
@@ -425,20 +554,6 @@
                 detailsList.appendChild(li);
             }
         });
-        
-        // Функция для обновления настроек через консоль браузера
-        window.updateSettings = function(newExchangeRate, newMultisportValue) {
-            exchangeRate = newExchangeRate;
-            multisportValue = newMultisportValue;
-            
-            // Обновляем отображение конфигурации
-            updateConfigDisplay();
-            
-            console.log('Settings updated:');
-            console.log('Exchange Rate:', exchangeRate);
-            console.log('Multisport Value:', multisportValue);
-            console.log('Note: These changes are temporary. To make them permanent, edit the EXCHANGE_RATE and MULTISPORT_VALUE variables in the code.');
-        };
     </script>
 </body>
 </html>
