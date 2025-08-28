@@ -363,12 +363,12 @@
         
         <div class="input-group">
             <label for="additional-usd">Additional Reward (in USD):</label>
-            <input type="number" id="additional-usd" step="0.01" value="0" placeholder="Enter additional amount in USD">
+            <input type="number" id="additional-usd" step="0.01" placeholder="Enter additional amount in USD">
         </div>
         
         <div class="input-group">
-            <label for="additional-compensation">Additional Compensation (in PLN):</label>
-            <input type="number" id="additional-compensation" step="0.01" value="0" placeholder="Enter additional compensation in PLN">
+            <label for="additional-pln">Additional Reward (in PLN):</label>
+            <input type="number" id="additional-pln" step="0.01" placeholder="Enter additional amount in PLN">
         </div>
         
         <div class="checkbox-group">
@@ -472,24 +472,22 @@
             calculateBtn.addEventListener('click', function() {
                 const usdAmount = parseFloat(document.getElementById('usd-amount').value) || 0;
                 const additionalUSD = parseFloat(document.getElementById('additional-usd').value) || 0;
+                const additionalPLN = parseFloat(document.getElementById('additional-pln').value) || 0;
                 const hasMultisport = document.getElementById('multisport').checked;
-                const additionalCompensation = parseFloat(document.getElementById('additional-compensation').value) || 0;
                 
-                calculateAndDisplayResult(usdAmount, additionalUSD, hasMultisport, additionalCompensation);
+                calculateAndDisplayResult(usdAmount, additionalUSD, additionalPLN, hasMultisport);
             });
             
             // Функция расчета
-            function calculateAndDisplayResult(usdAmount, additionalUSD, hasMultisport, additionalCompensation) {
+            function calculateAndDisplayResult(usdAmount, additionalUSD, additionalPLN, hasMultisport) {
                 const mainAmountPLN = usdAmount * exchangeRate;
                 const additionalUSDinPLN = additionalUSD * exchangeRate;
                 
-                let totalAmount = mainAmountPLN + additionalUSDinPLN;
+                let totalAmount = mainAmountPLN + additionalUSDinPLN + additionalPLN;
                 
                 if (hasMultisport) {
                     totalAmount += multisportValue;
                 }
-                
-                totalAmount += additionalCompensation;
                 
                 // Отображаем результат
                 resultValue.textContent = Math.abs(totalAmount).toFixed(2) + ' PLN';
@@ -513,8 +511,8 @@
                     addDetail(`Additional reward: ${additionalUSD} USD × ${exchangeRate}`, formatCurrency(amount), amount < 0 ? 'negative' : '');
                 }
                 
-                if (additionalCompensation !== 0) {
-                    addDetail('Additional compensation', formatCurrency(additionalCompensation), additionalCompensation < 0 ? 'negative' : '');
+                if (additionalPLN !== 0) {
+                    addDetail('Additional reward (PLN)', formatCurrency(additionalPLN), additionalPLN < 0 ? 'negative' : '');
                 }
                 
                 if (hasMultisport) {
