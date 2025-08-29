@@ -52,11 +52,28 @@
             margin-bottom: 15px;
             display: flex;
             align-items: center;
+            justify-content: space-between;
         }
         
         .config-panel h2::before {
             content: "⚙️";
             margin-right: 10px;
+        }
+        
+        .reset-btn {
+            background: #ff9800;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        
+        .reset-btn:hover {
+            background: #f57c00;
         }
         
         .config-values {
@@ -328,7 +345,10 @@
         <h1>B2B Reward Calculator</h1>
         
         <div class="config-panel">
-            <h2>Current Configuration</h2>
+            <h2>
+                Current Configuration
+                <button class="reset-btn" onclick="resetToDefault()" title="Reset to default values">↺ Reset to Default</button>
+            </h2>
             <div class="config-values">
                 <div class="config-item">
                     <h3>
@@ -399,9 +419,34 @@
     </div>
 
     <script>
+        // Значения по умолчанию (hardcoded в коде)
+        const DEFAULT_EXCHANGE_RATE = 3.654;
+        const DEFAULT_MULTISPORT_VALUE = 154.65;
+        
         // Глобальные переменные
-        let exchangeRate = 3.654;
-        let multisportValue = 154.65;
+        let exchangeRate = DEFAULT_EXCHANGE_RATE;
+        let multisportValue = DEFAULT_MULTISPORT_VALUE;
+        
+        // Функция сброса к значениям по умолчанию
+        function resetToDefault() {
+            if (confirm('Reset all settings to default values?')) {
+                exchangeRate = DEFAULT_EXCHANGE_RATE;
+                multisportValue = DEFAULT_MULTISPORT_VALUE;
+                
+                // Очищаем localStorage
+                localStorage.removeItem('b2b_exchange_rate');
+                localStorage.removeItem('b2b_multisport_value');
+                
+                // Обновляем отображение
+                updateConfigDisplay();
+                
+                // Скрываем все открытые формы редактирования
+                hideEditForm('exchange-rate');
+                hideEditForm('multisport');
+                
+                alert('Settings reset to default values!');
+            }
+        }
         
         // Функция для обновления отображения конфигурации
         function updateConfigDisplay() {
