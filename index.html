@@ -429,23 +429,19 @@
         
         // Функция сброса к значениям по умолчанию
         function resetToDefault() {
-            if (confirm('Reset all settings to default values?')) {
-                exchangeRate = DEFAULT_EXCHANGE_RATE;
-                multisportValue = DEFAULT_MULTISPORT_VALUE;
-                
-                // Очищаем localStorage
-                localStorage.removeItem('b2b_exchange_rate');
-                localStorage.removeItem('b2b_multisport_value');
-                
-                // Обновляем отображение
-                updateConfigDisplay();
-                
-                // Скрываем все открытые формы редактирования
-                hideEditForm('exchange-rate');
-                hideEditForm('multisport');
-                
-                alert('Settings reset to default values!');
-            }
+            exchangeRate = DEFAULT_EXCHANGE_RATE;
+            multisportValue = DEFAULT_MULTISPORT_VALUE;
+            
+            // Очищаем localStorage
+            localStorage.removeItem('b2b_exchange_rate');
+            localStorage.removeItem('b2b_multisport_value');
+            
+            // Обновляем отображение
+            updateConfigDisplay();
+            
+            // Скрываем все открытые формы редактирования
+            hideEditForm('exchange-rate');
+            hideEditForm('multisport');
         }
         
         // Функция для обновления отображения конфигурации
