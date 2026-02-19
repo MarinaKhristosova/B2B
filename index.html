@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>B2B Reward Calculator</title>
     <style>
-        /* Стили оставлены и немного улучшены для поддержки 3-х колонок */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -243,10 +242,7 @@
         <h1>B2B Reward Calculator</h1>
         
         <div class="config-panel">
-            <h2>
-                Global Settings
-                <button class="reset-btn" onclick="resetToDefault()">↺ Reset to Defaults</button>
-            </h2>
+            <h2>Global Settings <button class="reset-btn" onclick="resetToDefault()">↺ Reset</button></h2>
             <div class="config-values">
                 <div class="config-item">
                     <h3>USD Rate <button class="config-edit-btn" onclick="showEditForm('exchange-rate')">✏️</button></h3>
@@ -304,7 +300,7 @@
                 <label for="multisport-check">Include Multisport</label>
             </div>
             <div class="checkbox-group">
-                <input type="checkbox" id="lunch-check">
+                <input type="checkbox" id="lunch-check" checked>
                 <label for="lunch-check">Include Lunch Allowance</label>
             </div>
         </div>
@@ -323,30 +319,25 @@
 
     <script>
         /**************************************************************
-         * БЛОК НАСТРОЕК (МЕНЯЙТЕ КУРС И СУММЫ ЗДЕСЬ)
+         * БЛОК НАСТРОЕК (МЕНЯЙТЕ ЗДЕСЬ)
          **************************************************************/
         const DEFAULTS = {
-            exchangeRate: 3.5831,       // Курс доллара к злотому
-            multisportValue: 154.65,    // Сумма мультиспорта
-            lunchValue: 1000.00         // Сумма на обеды
+            exchangeRate: 3.5831,
+            multisportValue: 154.65,
+            lunchValue: 1000.00
         };
-        /**************************************************************/
 
         let config = { ...DEFAULTS };
 
-        // Инициализация
         document.addEventListener('DOMContentLoaded', () => {
             loadSavedSettings();
             updateConfigDisplay();
-            
             document.getElementById('calculate-btn').addEventListener('click', calculate);
         });
 
         function loadSavedSettings() {
             const saved = localStorage.getItem('b2b_calc_config');
-            if (saved) {
-                config = { ...config, ...JSON.parse(saved) };
-            }
+            if (saved) config = { ...config, ...JSON.parse(saved) };
         }
 
         function updateConfigDisplay() {
@@ -379,7 +370,7 @@
         }
 
         function resetToDefault() {
-            if (confirm('Reset all values to defaults?')) {
+            if (confirm('Reset to defaults?')) {
                 config = { ...DEFAULTS };
                 localStorage.removeItem('b2b_calc_config');
                 updateConfigDisplay();
@@ -397,7 +388,6 @@
             detailsList.innerHTML = '';
             let total = 0;
 
-            // Расчеты
             const addLine = (label, val) => {
                 const li = document.createElement('li');
                 li.innerHTML = `<span>${label}</span><span>${val.toFixed(2)} PLN</span>`;
@@ -406,32 +396,20 @@
                 total += val;
             };
 
-            if (usdBase !== 0) {
-                addLine(`Base Amount (${usdBase} USD × ${config.exchangeRate})`, usdBase * config.exchangeRate);
-            }
-            if (usdAdd !== 0) {
-                addLine(`Extra USD (${usdAdd} USD × ${config.exchangeRate})`, usdAdd * config.exchangeRate);
-            }
-            if (plnAdd !== 0) {
-                addLine(`Extra PLN`, plnAdd);
-            }
-            if (hasMultisport) {
-                addLine(`Multisport Benefit`, config.multisportValue);
-            }
-            if (hasLunch) {
-                addLine(`Lunch Allowance`, config.lunchValue);
-            }
+            if (usdBase !== 0) addLine(`Base Amount (${usdBase} USD)`, usdBase * config.exchangeRate);
+            if (usdAdd !== 0) addLine(`Extra USD (${usdAdd} USD)`, usdAdd * config.exchangeRate);
+            if (plnAdd !== 0) addLine(`Extra PLN`, plnAdd);
+            if (hasMultisport) addLine(`Multisport`, config.multisportValue);
+            if (hasLunch) addLine(`Lunch Allowance`, config.lunchValue);
 
-            // Итоговая строка
             const finalLi = document.createElement('li');
             finalLi.className = 'total';
-            finalLi.innerHTML = `<span>TOTAL REWARD</span><span>${total.toFixed(2)} PLN</span>`;
+            finalLi.innerHTML = `<span>TOTAL</span><span>${total.toFixed(2)} PLN</span>`;
             detailsList.appendChild(finalLi);
 
             const resVal = document.getElementById('result-value');
             resVal.textContent = total.toFixed(2) + ' PLN';
             resVal.className = 'result-value' + (total < 0 ? ' negative' : '');
-            
             document.getElementById('result').style.display = 'block';
         }
     </script>
