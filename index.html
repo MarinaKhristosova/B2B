@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>B2B Reward Calculator</title>
     <style>
+        /* Стили оставлены и немного улучшены для поддержки 3-х колонок */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -24,7 +25,7 @@
         }
         
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             width: 100%;
             background: white;
             padding: 30px;
@@ -78,7 +79,7 @@
         
         .config-values {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 15px;
             margin-bottom: 15px;
         }
@@ -94,17 +95,17 @@
         .config-item h3 {
             color: #2e7d32;
             margin-bottom: 8px;
-            font-size: 16px;
+            font-size: 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         
         .config-value {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: bold;
             color: #1b5e20;
-            margin: 10px 0;
+            margin: 5px 0;
         }
         
         .config-edit-btn {
@@ -157,46 +158,33 @@
             font-weight: 500;
         }
         
-        .btn-save {
-            background: #4caf50;
-            color: white;
-        }
+        .btn-save { background: #4caf50; color: white; }
+        .btn-cancel { background: #f5f5f5; color: #666; border: 1px solid #ddd !important; }
         
-        .btn-cancel {
-            background: #f5f5f5;
-            color: #666;
-            border: 1px solid #ddd !important;
-        }
+        .input-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50; }
         
-        .input-group {
-            margin-bottom: 18px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-        
-        input[type="number"], input[type="text"] {
+        input[type="number"] {
             width: 100%;
             padding: 12px 15px;
             border: 2px solid #ddd;
             border-radius: 6px;
             font-size: 16px;
-            transition: border-color 0.3s;
         }
         
-        input[type="number"]:focus, input[type="text"]:focus {
-            border-color: #3498db;
-            outline: none;
+        .checkbox-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
         }
-        
+
         .checkbox-group {
-            margin: 18px 0;
             display: flex;
             align-items: center;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 6px;
         }
         
         input[type="checkbox"] {
@@ -206,12 +194,9 @@
             cursor: pointer;
         }
         
-        .checkbox-group label {
-            margin-bottom: 0;
-            cursor: pointer;
-        }
+        .checkbox-group label { margin-bottom: 0; cursor: pointer; }
         
-        button {
+        #calculate-btn {
             background: linear-gradient(to right, #2ecc71, #27ae60);
             color: white;
             border: none;
@@ -222,17 +207,7 @@
             font-weight: 600;
             width: 100%;
             margin-top: 15px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-        }
-        
-        button:active {
-            transform: translateY(0);
+            transition: transform 0.2s;
         }
         
         .result {
@@ -240,9 +215,7 @@
             padding: 25px;
             background: linear-gradient(to right, #e8f5e9, #c8e6c9);
             border-radius: 10px;
-            text-align: center;
             display: none;
-            animation: fadeIn 0.5s ease;
         }
         
         .calculation-details {
@@ -250,94 +223,19 @@
             padding: 15px;
             background-color: #f1f8e9;
             border-radius: 8px;
-            text-align: left;
             font-size: 14px;
         }
         
-        .calculation-details h3 {
-            color: #2e7d32;
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-        
-        .calculation-details ul {
-            padding-left: 20px;
-            list-style: none;
-        }
-        
         .calculation-details li {
-            margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
-            padding: 4px 0;
+            padding: 6px 0;
+            border-bottom: 1px solid #e0e0e0;
         }
         
-        .calculation-details .negative {
-            color: #d32f2f;
-        }
-        
-        .calculation-details .total {
-            border-top: 2px solid #a5d6a7;
-            margin-top: 10px;
-            padding-top: 10px;
-            font-weight: bold;
-            font-size: 16px;
-        }
-        
-        .calculation-details .negative-total {
-            border-top: 2px solid #ffcdd2;
-            color: #d32f2f;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .result h2 {
-            color: #2e7d32;
-            margin-bottom: 15px;
-        }
-        
-        .result-value {
-            font-size: 32px;
-            font-weight: bold;
-            color: #1b5e20;
-        }
-        
-        .result-value.negative {
-            color: #d32f2f;
-        }
-        
-        .section-title {
-            margin: 25px 0 20px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid #eee;
-            color: #2c3e50;
-            font-size: 1.5rem;
-        }
-        
-        @media (max-width: 768px) {
-            .config-values {
-                grid-template-columns: 1fr;
-            }
-            
-            .container {
-                padding: 20px;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            .result-value {
-                font-size: 28px;
-            }
-            
-            .config-value {
-                font-size: 20px;
-            }
-        }
+        .total { font-weight: bold; font-size: 18px; border-top: 2px solid #4caf50 !important; margin-top: 10px; }
+        .negative { color: #d32f2f; }
+        .section-title { margin: 25px 0 15px; border-bottom: 2px solid #eee; padding-bottom: 5px; }
     </style>
 </head>
 <body>
@@ -346,35 +244,40 @@
         
         <div class="config-panel">
             <h2>
-                Current Configuration
-                <button class="reset-btn" onclick="resetToDefault()" title="Reset to default values">↺ Reset to Default</button>
+                Global Settings
+                <button class="reset-btn" onclick="resetToDefault()">↺ Reset to Defaults</button>
             </h2>
             <div class="config-values">
                 <div class="config-item">
-                    <h3>
-                        USD to PLN Exchange Rate
-                        <button class="config-edit-btn" onclick="showEditForm('exchange-rate')" title="Edit exchange rate">✏️</button>
-                    </h3>
-                    <div class="config-value" id="current-exchange-rate">3.5831</div>
+                    <h3>USD Rate <button class="config-edit-btn" onclick="showEditForm('exchange-rate')">✏️</button></h3>
+                    <div class="config-value" id="current-exchange-rate">0.00</div>
                     <div class="edit-form" id="edit-exchange-rate">
-                        <input type="number" id="edit-exchange-rate-input" step="0.001" placeholder="New exchange rate">
+                        <input type="number" id="edit-exchange-rate-input" step="0.0001">
                         <div class="edit-form-buttons">
-                            <button class="btn-save" onclick="saveExchangeRate()">Save</button>
+                            <button class="btn-save" onclick="saveSetting('exchangeRate', 'exchange-rate')">Save</button>
                             <button class="btn-cancel" onclick="hideEditForm('exchange-rate')">Cancel</button>
                         </div>
                     </div>
                 </div>
                 <div class="config-item">
-                    <h3>
-                        Multisport Value
-                        <button class="config-edit-btn" onclick="showEditForm('multisport')" title="Edit multisport value">✏️</button>
-                    </h3>
-                    <div class="config-value" id="current-multisport">154.65 PLN</div>
+                    <h3>Multisport PLN <button class="config-edit-btn" onclick="showEditForm('multisport')">✏️</button></h3>
+                    <div class="config-value" id="current-multisport">0.00 PLN</div>
                     <div class="edit-form" id="edit-multisport">
-                        <input type="number" id="edit-multisport-input" step="0.01" placeholder="New multisport value">
+                        <input type="number" id="edit-multisport-input" step="0.01">
                         <div class="edit-form-buttons">
-                            <button class="btn-save" onclick="saveMultisportValue()">Save</button>
+                            <button class="btn-save" onclick="saveSetting('multisportValue', 'multisport')">Save</button>
                             <button class="btn-cancel" onclick="hideEditForm('multisport')">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="config-item">
+                    <h3>Lunch Allowance PLN <button class="config-edit-btn" onclick="showEditForm('lunch')">✏️</button></h3>
+                    <div class="config-value" id="current-lunch">0.00 PLN</div>
+                    <div class="edit-form" id="edit-lunch">
+                        <input type="number" id="edit-lunch-input" step="0.01">
+                        <div class="edit-form-buttons">
+                            <button class="btn-save" onclick="saveSetting('lunchValue', 'lunch')">Save</button>
+                            <button class="btn-cancel" onclick="hideEditForm('lunch')">Cancel</button>
                         </div>
                     </div>
                 </div>
@@ -382,211 +285,155 @@
         </div>
         
         <h2 class="section-title">Reward Calculation</h2>
-        
         <div class="input-group">
-            <label for="usd-amount">Amount in USD:</label>
-            <input type="number" id="usd-amount" step="0.01" placeholder="Enter amount in USD">
+            <label>Amount in USD:</label>
+            <input type="number" id="usd-amount" step="0.01" placeholder="0.00">
         </div>
-        
         <div class="input-group">
-            <label for="additional-usd">Additional Reward (in USD):</label>
-            <input type="number" id="additional-usd" step="0.01" placeholder="Enter additional amount in USD">
+            <label>Additional Reward (USD):</label>
+            <input type="number" id="additional-usd" step="0.01" placeholder="0.00">
         </div>
-        
         <div class="input-group">
-            <label for="additional-pln">Additional Reward (in PLN):</label>
-            <input type="number" id="additional-pln" step="0.01" placeholder="Enter additional amount in PLN">
+            <label>Additional Reward (PLN):</label>
+            <input type="number" id="additional-pln" step="0.01" placeholder="0.00">
         </div>
         
-        <div class="checkbox-group">
-            <input type="checkbox" id="multisport">
-            <label for="multisport">Multisport</label>
+        <div class="checkbox-container">
+            <div class="checkbox-group">
+                <input type="checkbox" id="multisport-check">
+                <label for="multisport-check">Include Multisport</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="lunch-check">
+                <label for="lunch-check">Include Lunch Allowance</label>
+            </div>
         </div>
         
-        <button id="calculate-btn">Calculate Reward</button>
+        <button id="calculate-btn">Calculate Total Reward</button>
         
         <div class="result" id="result">
-            <h2>Total Reward Amount:</h2>
+            <h2 id="result-label">Total Reward:</h2>
             <div class="result-value" id="result-value">0.00 PLN</div>
-            
-            <div class="calculation-details" id="calculation-details">
-                <h3>Calculation Details:</h3>
-                <ul id="details-list">
-                    <!-- Calculation details will be inserted here -->
-                </ul>
+            <div class="calculation-details">
+                <h3>Breakdown:</h3>
+                <ul id="details-list"></ul>
             </div>
         </div>
     </div>
 
     <script>
-        // Значения по умолчанию (hardcoded в коде)
-        const DEFAULT_EXCHANGE_RATE = 3.5831;
-        const DEFAULT_MULTISPORT_VALUE = 154.65;
-        
-        // Глобальные переменные
-        let exchangeRate = DEFAULT_EXCHANGE_RATE;
-        let multisportValue = DEFAULT_MULTISPORT_VALUE;
-        
-        // Функция сброса к значениям по умолчанию
-        function resetToDefault() {
-            exchangeRate = DEFAULT_EXCHANGE_RATE;
-            multisportValue = DEFAULT_MULTISPORT_VALUE;
-            
-            // Очищаем localStorage
-            localStorage.removeItem('b2b_exchange_rate');
-            localStorage.removeItem('b2b_multisport_value');
-            
-            // Обновляем отображение
+        /**************************************************************
+         * БЛОК НАСТРОЕК (МЕНЯЙТЕ КУРС И СУММЫ ЗДЕСЬ)
+         **************************************************************/
+        const DEFAULTS = {
+            exchangeRate: 3.5831,       // Курс доллара к злотому
+            multisportValue: 154.65,    // Сумма мультиспорта
+            lunchValue: 1000.00         // Сумма на обеды
+        };
+        /**************************************************************/
+
+        let config = { ...DEFAULTS };
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSavedSettings();
             updateConfigDisplay();
             
-            // Скрываем все открытые формы редактирования
-            hideEditForm('exchange-rate');
-            hideEditForm('multisport');
-        }
-        
-        // Функция для обновления отображения конфигурации
-        function updateConfigDisplay() {
-            document.getElementById('current-exchange-rate').textContent = exchangeRate;
-            document.getElementById('current-multisport').textContent = multisportValue + ' PLN';
-        }
-        
-        // Функции для редактирования настроек
-        function showEditForm(type) {
-            document.getElementById(`edit-${type}`).style.display = 'block';
-            if (type === 'exchange-rate') {
-                document.getElementById('edit-exchange-rate-input').value = exchangeRate;
-            } else {
-                document.getElementById('edit-multisport-input').value = multisportValue;
+            document.getElementById('calculate-btn').addEventListener('click', calculate);
+        });
+
+        function loadSavedSettings() {
+            const saved = localStorage.getItem('b2b_calc_config');
+            if (saved) {
+                config = { ...config, ...JSON.parse(saved) };
             }
         }
-        
+
+        function updateConfigDisplay() {
+            document.getElementById('current-exchange-rate').textContent = config.exchangeRate;
+            document.getElementById('current-multisport').textContent = config.multisportValue.toFixed(2) + ' PLN';
+            document.getElementById('current-lunch').textContent = config.lunchValue.toFixed(2) + ' PLN';
+        }
+
+        function showEditForm(type) {
+            const form = document.getElementById(`edit-${type}`);
+            form.style.display = 'block';
+            const input = form.querySelector('input');
+            if (type === 'exchange-rate') input.value = config.exchangeRate;
+            if (type === 'multisport') input.value = config.multisportValue;
+            if (type === 'lunch') input.value = config.lunchValue;
+        }
+
         function hideEditForm(type) {
             document.getElementById(`edit-${type}`).style.display = 'none';
         }
-        
-        function saveExchangeRate() {
-            const newRate = parseFloat(document.getElementById('edit-exchange-rate-input').value);
-            if (!isNaN(newRate) && newRate > 0) {
-                exchangeRate = newRate;
+
+        function saveSetting(key, type) {
+            const val = parseFloat(document.getElementById(`edit-${type}-input`).value);
+            if (!isNaN(val) && val >= 0) {
+                config[key] = val;
+                localStorage.setItem('b2b_calc_config', JSON.stringify(config));
                 updateConfigDisplay();
-                hideEditForm('exchange-rate');
-                // Сохраняем в localStorage
-                localStorage.setItem('b2b_exchange_rate', exchangeRate);
-            } else {
-                alert('Please enter a valid positive number for exchange rate');
+                hideEditForm(type);
             }
         }
-        
-        function saveMultisportValue() {
-            const newValue = parseFloat(document.getElementById('edit-multisport-input').value);
-            if (!isNaN(newValue) && newValue >= 0) {
-                multisportValue = newValue;
+
+        function resetToDefault() {
+            if (confirm('Reset all values to defaults?')) {
+                config = { ...DEFAULTS };
+                localStorage.removeItem('b2b_calc_config');
                 updateConfigDisplay();
-                hideEditForm('multisport');
-                // Сохраняем в localStorage
-                localStorage.setItem('b2b_multisport_value', multisportValue);
-            } else {
-                alert('Please enter a valid number for multisport value');
             }
         }
-        
-        // Загрузка сохраненных настроек
-        function loadSavedSettings() {
-            const savedRate = localStorage.getItem('b2b_exchange_rate');
-            const savedMultisport = localStorage.getItem('b2b_multisport_value');
-            
-            if (savedRate) {
-                exchangeRate = parseFloat(savedRate);
-            }
-            if (savedMultisport) {
-                multisportValue = parseFloat(savedMultisport);
-            }
-        }
-        
-        // Инициализация при загрузке
-        document.addEventListener('DOMContentLoaded', function() {
-            const calculateBtn = document.getElementById('calculate-btn');
-            const resultDiv = document.getElementById('result');
-            const resultValue = document.getElementById('result-value');
+
+        function calculate() {
+            const usdBase = parseFloat(document.getElementById('usd-amount').value) || 0;
+            const usdAdd = parseFloat(document.getElementById('additional-usd').value) || 0;
+            const plnAdd = parseFloat(document.getElementById('additional-pln').value) || 0;
+            const hasMultisport = document.getElementById('multisport-check').checked;
+            const hasLunch = document.getElementById('lunch-check').checked;
+
             const detailsList = document.getElementById('details-list');
-            
-            // Загружаем сохраненные настройки
-            loadSavedSettings();
-            
-            // Обновляем отображение конфигурации
-            updateConfigDisplay();
-            
-            // Обработчик расчета
-            calculateBtn.addEventListener('click', function() {
-                const usdAmount = parseFloat(document.getElementById('usd-amount').value) || 0;
-                const additionalUSD = parseFloat(document.getElementById('additional-usd').value) || 0;
-                const additionalPLN = parseFloat(document.getElementById('additional-pln').value) || 0;
-                const hasMultisport = document.getElementById('multisport').checked;
-                
-                calculateAndDisplayResult(usdAmount, additionalUSD, additionalPLN, hasMultisport);
-            });
-            
-            // Функция расчета
-            function calculateAndDisplayResult(usdAmount, additionalUSD, additionalPLN, hasMultisport) {
-                const mainAmountPLN = usdAmount * exchangeRate;
-                const additionalUSDinPLN = additionalUSD * exchangeRate;
-                
-                let totalAmount = mainAmountPLN + additionalUSDinPLN + additionalPLN;
-                
-                if (hasMultisport) {
-                    totalAmount += multisportValue;
-                }
-                
-                // Отображаем результат
-                resultValue.textContent = Math.abs(totalAmount).toFixed(2) + ' PLN';
-                if (totalAmount < 0) {
-                    resultValue.classList.add('negative');
-                    resultValue.textContent = '-' + resultValue.textContent;
-                } else {
-                    resultValue.classList.remove('negative');
-                }
-                
-                // Показываем детали расчета
-                detailsList.innerHTML = '';
-                
-                if (usdAmount !== 0) {
-                    const amount = usdAmount * exchangeRate;
-                    addDetail(`Main amount: ${usdAmount} USD × ${exchangeRate}`, formatCurrency(amount), amount < 0 ? 'negative' : '');
-                }
-                
-                if (additionalUSD !== 0) {
-                    const amount = additionalUSD * exchangeRate;
-                    addDetail(`Additional reward: ${additionalUSD} USD × ${exchangeRate}`, formatCurrency(amount), amount < 0 ? 'negative' : '');
-                }
-                
-                if (additionalPLN !== 0) {
-                    addDetail('Additional reward (PLN)', formatCurrency(additionalPLN), additionalPLN < 0 ? 'negative' : '');
-                }
-                
-                if (hasMultisport) {
-                    addDetail('Multisport', formatCurrency(multisportValue));
-                }
-                
-                addDetail('TOTAL', formatCurrency(totalAmount), totalAmount < 0 ? 'negative-total' : 'total');
-                resultDiv.style.display = 'block';
-            }
-            
-            // Функция для форматирования валюты
-            function formatCurrency(amount) {
-                if (amount < 0) {
-                    return '- ' + Math.abs(amount).toFixed(2) + ' PLN';
-                }
-                return amount.toFixed(2) + ' PLN';
-            }
-            
-            // Функция для добавления деталей расчета
-            function addDetail(description, value, className = '') {
+            detailsList.innerHTML = '';
+            let total = 0;
+
+            // Расчеты
+            const addLine = (label, val) => {
                 const li = document.createElement('li');
-                if (className) li.className = className;
-                li.innerHTML = `<span>${description}</span><span>${value}</span>`;
+                li.innerHTML = `<span>${label}</span><span>${val.toFixed(2)} PLN</span>`;
+                if (val < 0) li.classList.add('negative');
                 detailsList.appendChild(li);
+                total += val;
+            };
+
+            if (usdBase !== 0) {
+                addLine(`Base Amount (${usdBase} USD × ${config.exchangeRate})`, usdBase * config.exchangeRate);
             }
-        });
+            if (usdAdd !== 0) {
+                addLine(`Extra USD (${usdAdd} USD × ${config.exchangeRate})`, usdAdd * config.exchangeRate);
+            }
+            if (plnAdd !== 0) {
+                addLine(`Extra PLN`, plnAdd);
+            }
+            if (hasMultisport) {
+                addLine(`Multisport Benefit`, config.multisportValue);
+            }
+            if (hasLunch) {
+                addLine(`Lunch Allowance`, config.lunchValue);
+            }
+
+            // Итоговая строка
+            const finalLi = document.createElement('li');
+            finalLi.className = 'total';
+            finalLi.innerHTML = `<span>TOTAL REWARD</span><span>${total.toFixed(2)} PLN</span>`;
+            detailsList.appendChild(finalLi);
+
+            const resVal = document.getElementById('result-value');
+            resVal.textContent = total.toFixed(2) + ' PLN';
+            resVal.className = 'result-value' + (total < 0 ? ' negative' : '');
+            
+            document.getElementById('result').style.display = 'block';
+        }
     </script>
 </body>
 </html>
