@@ -1,0 +1,25 @@
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+body { background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.container { background: white; max-width: 900px; width: 100%; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+h1 { text-align: center; margin-bottom: 25px; color: #2c3e50; }
+.config-panel { background: #e8f5e9; padding: 20px; border-radius: 10px; margin-bottom: 25px; border-left: 5px solid #4caf50; }
+.config-panel h2 { display: flex; justify-content: space-between; font-size: 1.1rem; color: #2e7d32; margin-bottom: 15px; }
+.config-values { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+.config-item { background: white; padding: 12px; border-radius: 8px; border: 2px solid #c8e6c9; }
+.config-item h3 { font-size: 0.8rem; color: #666; text-transform: uppercase; display: flex; justify-content: space-between; }
+.config-value { font-size: 1.3rem; font-weight: bold; color: #1b5e20; margin-top: 5px; }
+.edit-form { display: none; margin-top: 10px; }
+.edit-form input { width: 100%; padding: 5px; margin-bottom: 5px; }
+.reset-btn { background: #ff9800; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; }
+.input-group { margin-bottom: 15px; }
+label { display: block; font-weight: 600; margin-bottom: 5px; }
+input[type="number"] { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 1rem; }
+.checkbox-container { display: flex; gap: 15px; margin: 20px 0; }
+.checkbox-group { flex: 1; background: #f8f9fa; padding: 10px; border-radius: 8px; display: flex; align-items: center; }
+input[type="checkbox"] { margin-right: 10px; transform: scale(1.2); }
+#calculate-btn { width: 100%; background: #27ae60; color: white; border: none; padding: 15px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; }
+.result { margin-top: 25px; padding: 20px; background: #f1f8e9; border-radius: 10px; display: none; }
+.result-value { font-size: 2.2rem; font-weight: bold; text-align: center; margin-bottom: 15px; }
+.calculation-details { list-style: none; }
+.calculation-details li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #ddd; font-size: 0.9rem; }
+.btn-save { background: #4caf50; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; width: 100%; }
