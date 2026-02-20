@@ -1,278 +1,86 @@
-/* Основные настройки шрифта и сброс отступов */
-* { 
-    box-sizing: border-box; 
-    margin: 0; 
-    padding: 0; 
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+/* 1. Сброс настроек для всей страницы */
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
 }
 
-/* Фон страницы - красивый розово-фиолетовый градиент */
+* { 
+    box-sizing: border-box; 
+    font-family: 'Segoe UI', Roboto, sans-serif; 
+}
+
+/* 2. Центрирование через Flexbox */
 body { 
-    background: linear-gradient(135deg, #B24592 0%, #F15F79 100%); /* Новый градиент */
-    min-height: 100vh; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
+    background: linear-gradient(135deg, #B24592 0%, #F15F79 100%);
+    display: flex;           /* Включаем режим гибкого контейнера */
+    justify-content: center; /* Выравнивание по горизонтали */
+    align-items: center;     /* Выравнивание по вертикали */
     padding: 20px; 
     color: #333;
 }
 
-/* Основной контейнер калькулятора */
+/* 3. Контейнер калькулятора */
 .container { 
     background: #ffffff; 
-    max-width: 900px; 
+    max-width: 700px; /* Немного сузил для более аккуратного вида */
     width: 100%; 
     padding: 35px; 
-    border-radius: 20px; /* Немного больше скругление */
-    box-shadow: 0 15px 35px rgba(136, 14, 79, 0.2); /* Тень с розовым оттенком */
+    border-radius: 20px; 
+    box-shadow: 0 15px 35px rgba(136, 14, 79, 0.3);
+    margin: auto;     /* Дополнительная страховка для центрирования */
 }
 
-/* Заголовок H1 */
-h1 { 
-    text-align: center; 
-    margin-bottom: 30px; 
-    color: #880e4f; /* Темно-розовый/мажента */
-    font-weight: 700;
-}
+/* --- ОСТАЛЬНЫЕ СТИЛИ (РОЗОВАЯ ТЕМА) --- */
 
-/* Панель настроек (верхняя цветная плашка) */
+h1 { text-align: center; margin-bottom: 30px; color: #880e4f; font-weight: 700; }
+
 .config-panel { 
-    background: #fce4ec; /* Очень светло-розовый фон */
-    padding: 25px; 
+    background: #fce4ec; 
+    padding: 20px; 
     border-radius: 15px; 
     margin-bottom: 30px; 
-    border-left: 6px solid #d81b60; /* Ярко-розовая полоса слева */
+    border-left: 6px solid #d81b60; 
 }
 
-/* Заголовки H2 внутри панели и в результатах */
-.config-panel h2, .result h2 { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center;
-    font-size: 1.2rem; 
-    color: #ad1457; /* Насыщенный розовый */
-    margin-bottom: 20px; 
-}
+.config-panel h2 { display: flex; justify-content: space-between; align-items: center; font-size: 1.1rem; color: #ad1457; margin-bottom: 15px; }
 
-/* Сетка для карточек настроек */
-.config-values { 
-    display: grid; 
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
-    gap: 20px; 
-}
+.config-values { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
 
-/* Отдельная карточка настройки (Курс, Мультиспорт...) */
-.config-item { 
-    background: #fff; 
-    padding: 15px 20px; 
-    border-radius: 12px; 
-    border: 2px solid #f8bbd0; /* Светло-розовая рамка */
-    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-    transition: border-color 0.3s;
-}
+.config-item { background: #fff; padding: 15px; border-radius: 12px; border: 2px solid #f8bbd0; }
 
-.config-item:hover {
-    border-color: #ec407a; /* Рамка ярче при наведении */
-}
+.config-item h3 { font-size: 0.75rem; color: #7b1fa2; text-transform: uppercase; display: flex; justify-content: space-between; margin-bottom: 5px; }
 
-/* Заголовки H3 внутри карточек */
-.config-item h3 { 
-    font-size: 0.85rem; 
-    color: #7b1fa2; /* Фиолетовый */
-    text-transform: uppercase; 
-    letter-spacing: 0.5px;
-    display: flex; 
-    justify-content: space-between; 
-    margin-bottom: 10px;
-}
+.config-value { font-size: 1.3rem; font-weight: 800; color: #4a148c; }
 
-/* Значения настроек (крупные цифры) */
-.config-value { 
-    font-size: 1.5rem; 
-    font-weight: 800; 
-    color: #4a148c; /* Глубокий фиолетовый */
-}
+.config-edit-btn { background: none; border: none; cursor: pointer; opacity: 0.5; }
 
-/* Кнопка редактирования (карандаш) */
-.config-edit-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1rem;
-    opacity: 0.6;
-    transition: opacity 0.2s, transform 0.2s;
-}
-.config-edit-btn:hover {
-    opacity: 1;
-    transform: scale(1.1);
-}
+.edit-form { display: none; margin-top: 10px; border-top: 1px solid #f8bbd0; padding-top: 10px; }
+.edit-form input { width: 100%; padding: 8px; margin-bottom: 8px; border: 1px solid #e1bee7; border-radius: 5px; }
 
-/* Форма редактирования (скрытая) */
-.edit-form { 
-    display: none; 
-    margin-top: 15px; 
-    padding-top: 15px;
-    border-top: 1px solid #f8bbd0;
-}
-.edit-form input { 
-    width: 100%; 
-    padding: 8px; 
-    margin-bottom: 10px; 
-    border: 2px solid #e1bee7;
-    border-radius: 6px;
-}
+.reset-btn { background: #ff4081; color: white; border: none; padding: 5px 12px; border-radius: 20px; cursor: pointer; font-size: 0.7rem; font-weight: 600; }
 
-/* Кнопка сброса (Reset) */
-.reset-btn { 
-    background: #ff4081; /* Ярко-розовый акцент */
-    color: white; 
-    border: none; 
-    padding: 6px 12px; 
-    border-radius: 20px; 
-    cursor: pointer; 
-    font-size: 0.75rem; 
-    font-weight: 600;
-    box-shadow: 0 2px 5px rgba(255, 64, 129, 0.3);
-    transition: background 0.2s;
-}
-.reset-btn:hover {
-    background: #f50057;
-}
+.input-group { margin-bottom: 15px; }
+label { display: block; font-weight: 600; margin-bottom: 5px; color: #4a148c; font-size: 0.9rem; }
+input[type="number"] { width: 100%; padding: 12px; border: 2px solid #e1bee7; border-radius: 10px; font-size: 1rem; }
 
-/* Группы полей ввода */
-.input-group { 
-    margin-bottom: 20px; 
-}
-label { 
-    display: block; 
-    font-weight: 600; 
-    margin-bottom: 8px; 
-    color: #4a148c; /* Фиолетовый цвет лейблов */
-}
-input[type="number"] { 
-    width: 100%; 
-    padding: 14px; 
-    border: 2px solid #e1bee7; /* Светло-фиолетовая рамка */
-    border-radius: 10px; 
-    font-size: 1.1rem; 
-    transition: border-color 0.3s;
-}
-input[type="number"]:focus {
-    outline: none;
-    border-color: #ab47bc; /* Фиолетовый при фокусе */
-}
+.checkbox-container { display: flex; gap: 15px; margin: 20px 0; }
+.checkbox-group { flex: 1; background: #f3e5f5; padding: 12px; border-radius: 10px; display: flex; align-items: center; cursor: pointer; }
+input[type="checkbox"] { margin-right: 10px; accent-color: #9c27b0; }
 
-/* Контейнер для чекбоксов */
-.checkbox-container { 
-    display: flex; 
-    gap: 20px; 
-    margin: 30px 0; 
-}
-.checkbox-group { 
-    flex: 1; 
-    background: #f3e5f5; /* Очень светло-фиолетовый фон */
-    padding: 15px; 
-    border-radius: 12px; 
-    display: flex; 
-    align-items: center; 
-    cursor: pointer;
-    transition: background 0.2s;
-}
-.checkbox-group:hover {
-    background: #e1bee7;
-}
-input[type="checkbox"] { 
-    margin-right: 12px; 
-    transform: scale(1.3); 
-    accent-color: #9c27b0; /* Фиолетовый цвет галочки */
-    cursor: pointer;
-}
-.checkbox-group label {
-    margin-bottom: 0;
-    cursor: pointer;
-    color: #6a1b9a;
-}
-
-/* Главная кнопка "Calculate" */
 #calculate-btn { 
     width: 100%; 
-    /* Градиент от фиолетового к розовому */
     background: linear-gradient(to right, #8e2de2, #ec008c); 
-    color: white; 
-    border: none; 
-    padding: 18px; 
-    border-radius: 12px; 
-    font-size: 1.2rem; 
-    font-weight: 700; 
-    cursor: pointer; 
+    color: white; border: none; padding: 16px; border-radius: 12px; 
+    font-size: 1.1rem; font-weight: 700; cursor: pointer; 
     box-shadow: 0 4px 15px rgba(236, 0, 140, 0.3);
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-#calculate-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(236, 0, 140, 0.4);
-}
-#calculate-btn:active {
-    transform: translateY(0);
 }
 
-/* Блок результатов */
-.result { 
-    margin-top: 35px; 
-    padding: 30px; 
-    background: #f3e5f5; /* Светло-фиолетовый фон */
-    border-radius: 15px; 
-    display: none; /* Скрыт по умолчанию */
-    animation: fadeIn 0.5s ease-in-out;
-}
+.result { margin-top: 25px; padding: 25px; background: #f3e5f5; border-radius: 15px; display: none; }
+.result-value { font-size: 2.2rem; font-weight: 800; text-align: center; margin-bottom: 20px; color: #8e2de2; }
 
-/* Итоговое значение (большая цифра) */
-.result-value { 
-    font-size: 2.5rem; 
-    font-weight: 800; 
-    text-align: center; 
-    margin-bottom: 25px; 
-    color: #8e2de2; /* Ярко-фиолетовый */
-}
+.calculation-details { list-style: none; background: #fff; padding: 15px; border-radius: 10px; border: 1px solid #e1bee7; }
+.calculation-details li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f3e5f5; font-size: 0.9rem; }
 
-/* Детали расчета (список) */
-.calculation-details { 
-    list-style: none; 
-    background: #fff;
-    padding: 15px;
-    border-radius: 10px;
-    border: 1px solid #e1bee7;
-}
-.calculation-details li { 
-    display: flex; 
-    justify-content: space-between; 
-    padding: 10px 0; 
-    border-bottom: 1px solid #f3e5f5; 
-    font-size: 0.95rem; 
-    color: #555;
-}
-.calculation-details li:last-child {
-    border-bottom: none;
-}
-
-/* Маленькая кнопка "Save" в настройках */
-.btn-save { 
-    background: #8e2de2; /* Фиолетовый */
-    color: white; 
-    border: none; 
-    padding: 8px 15px; 
-    border-radius: 6px; 
-    cursor: pointer; 
-    width: 100%; 
-    font-weight: 600;
-    transition: background 0.2s;
-}
-.btn-save:hover {
-    background: #7b1fa2;
-}
-
-/* Анимация появления результата */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+.btn-save { background: #8e2de2; color: white; border: none; padding: 6px; border-radius: 5px; cursor: pointer; width: 100%; font-size: 0.8rem; }
