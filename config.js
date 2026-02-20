@@ -1,7 +1,7 @@
 // --- ТВОИ НАСТРОЙКИ ---
 const APP_CONFIG = {
     defaults: {
-        exchangeRate: 3.5831,   // Курс доллара
+        exchangeRate: 3.5898,   // Курс доллара
         multisport: 154.65,    // Цена мультиспорта
         lunch: 1000.00         // Обеды
     },
