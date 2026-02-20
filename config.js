@@ -6,9 +6,9 @@ const APP_CONFIG = {
         lunch: 1000.00         // Обеды
     },
     labels: {
-        base: "Основная сумма (USD)",
-        bonusUsd: "Доп. вознаграждение (USD)",
-        bonusPln: "Доп. вознаграждение (PLN)",
+        base: "Base Amount (USD)",
+        bonusUsd: "Bonus (USD)",
+        bonusPln: "Bonus (PLN)",
         multisport: "Multisport Benefit",
         lunch: "Lunch Allowance"
     }
