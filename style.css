@@ -61,13 +61,27 @@ h1 { text-align: center; margin-bottom: 30px; color: #880e4f; font-weight: 700; 
 
 .reset-btn { background: #ff4081; color: white; border: none; padding: 5px 12px; border-radius: 20px; cursor: pointer; font-size: 0.7rem; font-weight: 600; }
 
-.input-group { margin-bottom: 15px; }
-label { display: block; font-weight: 600; margin-bottom: 5px; color: #4a148c; font-size: 0.9rem; }
-input[type="number"], input[type="date"] { width: 100%; padding: 12px; border: 2px solid #e1bee7; border-radius: 10px; font-size: 1rem; }
+input[type="number"], input[type="date"] { 
+    width: 100%; 
+    padding: 12px; 
+    border: 2px solid #e1bee7; 
+    border-radius: 10px; 
+    font-size: 1rem; 
+    color: #333;
+    background-color: #fff;
+    cursor: pointer; /* Добавили курсор, чтобы было понятно, что можно кликать */
+}
 
-.checkbox-container { display: flex; gap: 15px; margin: 20px 0; }
-.checkbox-group { flex: 1; background: #f3e5f5; padding: 12px; border-radius: 10px; display: flex; align-items: center; cursor: pointer; }
-input[type="checkbox"] { margin-right: 10px; accent-color: #9c27b0; }
+/* Делаем иконку календарика внутри поля более удобной для клика */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.6;
+    transition: 0.2s;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
 
 #calculate-btn { 
     width: 100%; 
