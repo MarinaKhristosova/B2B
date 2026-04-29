@@ -1,8 +1,8 @@
 // --- НАСТРОЙКИ ---
 const APP_CONFIG = {
     defaults: {
-        multisport: 160.21,    // Цена мультиспорта
-        lunch: 800.00          // Обеды
+        multisport: 160.21,
+        lunch: 800.00
     },
     labels: {
         base: "Base Amount (USD)",
@@ -18,28 +18,36 @@ const core = {
     currentTotal: 0, 
 
     init() {
-        const saved = localStorage.getItem('b2b_reward_settings');
-        // Загружаем только те настройки, которые реально нужны
-        if (saved) {
-            const parsed = JSON.parse(saved);
-            if (parsed.multisport) this.state.multisport = parsed.multisport;
-            if (parsed.lunch) this.state.lunch = parsed.lunch;
+        // Очищаем старые забагованные данные (от exchangeRate)
+        try {
+            const saved = localStorage.getItem('b2b_reward_settings');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                if (parsed.multisport) this.state.multisport = parsed.multisport;
+                if (parsed.lunch) this.state.lunch = parsed.lunch;
+            }
+        } catch(e) {
+            localStorage.removeItem('b2b_reward_settings');
         }
         
-        // Устанавливаем сегодняшнюю дату по умолчанию
-        document.getElementById('ui-invoice-date').valueAsDate = new Date();
+        // Устанавливаем сегодняшнюю дату
+        const dateField = document.getElementById('ui-invoice-date');
+        if (dateField) dateField.valueAsDate = new Date();
+        
         this.updateUI();
     },
 
     updateUI() {
-        // Больше никакого exchangeRate здесь нет, скрипт не сломается!
-        document.getElementById('val-multisport').textContent = this.state.multisport.toFixed(2) + ' PLN';
-        document.getElementById('val-lunch').textContent = this.state.lunch.toFixed(2) + ' PLN';
+        const msEl = document.getElementById('val-multisport');
+        const lunchEl = document.getElementById('val-lunch');
+        
+        if (msEl) msEl.textContent = this.state.multisport.toFixed(2) + ' PLN';
+        if (lunchEl) lunchEl.textContent = this.state.lunch.toFixed(2) + ' PLN';
     },
 
     toggleEdit(key) {
         const el = document.getElementById(`edit-${key}`);
-        if (!el) return; // Защита от ошибок
+        if (!el) return;
         el.style.display = el.style.display === 'block' ? 'none' : 'block';
         if (el.style.display === 'block') document.getElementById(`input-${key}`).value = this.state[key];
     },
@@ -71,7 +79,12 @@ const core = {
         const startDate = new Date(endDate);
         startDate.setDate(startDate.getDate() - 7);
 
-        const formatDate = (d) => d.toISOString().split('T')[0];
+        const formatDate = (d) => {
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
 
         try {
             const url = `https://api.nbp.pl/api/exchangerates/rates/a/usd/${formatDate(startDate)}/${formatDate(endDate)}/?format=json`;
@@ -99,7 +112,7 @@ const core = {
         const hasMultisport = document.getElementById('ui-check-multisport').checked;
         const hasLunch = document.getElementById('ui-check-lunch').checked;
 
-        let activeRate = 4.0; // Резервный курс на случай, если API NBP упадет
+        let activeRate = 4.0; 
         let rateSourceLabel = 'Fallback Rate';
 
         if (dateInput) {
@@ -108,7 +121,7 @@ const core = {
                 activeRate = nbpData.rate;
                 rateSourceLabel = `NBP from ${nbpData.date}`;
             } else {
-                alert("Не удалось получить курс NBP (возможно ошибка сети). Используется резервный курс.");
+                alert("Не удалось загрузить курс NBP. Используется резервный курс.");
             }
         } else {
             alert("Пожалуйста, выберите дату инвойса!");
@@ -162,4 +175,5 @@ const core = {
     }
 };
 
-core.init();
+// Инициализация при загрузке документа
+document.addEventListener('DOMContentLoaded', () => core.init());
