@@ -1,10 +1,30 @@
+// --- НАСТРОЙКИ ---
+const APP_CONFIG = {
+    defaults: {
+        multisport: 160.21,    // Цена мультиспорта
+        lunch: 800.00          // Обеды
+    },
+    labels: {
+        base: "Base Amount (USD)",
+        bonusUsd: "Bonus (USD)",
+        bonusPln: "Bonus (PLN)",
+        multisport: "Multisport Benefit",
+        lunch: "Lunch Allowance"
+    }
+};
+
 const core = {
     state: { ...APP_CONFIG.defaults },
-    currentTotal: 0, // Переменная для хранения итоговой суммы (для копирования)
+    currentTotal: 0, 
 
     init() {
         const saved = localStorage.getItem('b2b_reward_settings');
-        if (saved) this.state = { ...this.state, ...JSON.parse(saved) };
+        // Загружаем только те настройки, которые реально нужны
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            if (parsed.multisport) this.state.multisport = parsed.multisport;
+            if (parsed.lunch) this.state.lunch = parsed.lunch;
+        }
         
         // Устанавливаем сегодняшнюю дату по умолчанию
         document.getElementById('ui-invoice-date').valueAsDate = new Date();
@@ -12,13 +32,14 @@ const core = {
     },
 
     updateUI() {
-        document.getElementById('val-exchangeRate').textContent = this.state.exchangeRate;
+        // Больше никакого exchangeRate здесь нет, скрипт не сломается!
         document.getElementById('val-multisport').textContent = this.state.multisport.toFixed(2) + ' PLN';
         document.getElementById('val-lunch').textContent = this.state.lunch.toFixed(2) + ' PLN';
     },
 
     toggleEdit(key) {
         const el = document.getElementById(`edit-${key}`);
+        if (!el) return; // Защита от ошибок
         el.style.display = el.style.display === 'block' ? 'none' : 'block';
         if (el.style.display === 'block') document.getElementById(`input-${key}`).value = this.state[key];
     },
@@ -41,12 +62,10 @@ const core = {
         }
     },
 
-    // Функция запроса курса НБП за предыдущий рабочий день
     async fetchNBPRate(dateStr) {
         const invoiceDate = new Date(dateStr);
         if (isNaN(invoiceDate)) return null;
 
-        // Берем период: от (дата - 7 дней) до (дата - 1 день)
         const endDate = new Date(invoiceDate);
         endDate.setDate(endDate.getDate() - 1);
         const startDate = new Date(endDate);
@@ -59,14 +78,13 @@ const core = {
             const response = await fetch(url);
             if (response.ok) {
                 const data = await response.json();
-                // Последний элемент в массиве - это курс за последний рабочий день
                 const lastRate = data.rates[data.rates.length - 1];
                 return { rate: lastRate.mid, date: lastRate.effectiveDate };
             }
         } catch (error) {
             console.warn('Ошибка при получении курса NBP:', error);
         }
-        return null; // Если API недоступен или нет данных
+        return null;
     },
 
     async calculate() {
@@ -81,9 +99,8 @@ const core = {
         const hasMultisport = document.getElementById('ui-check-multisport').checked;
         const hasLunch = document.getElementById('ui-check-lunch').checked;
 
-        // Определяем курс
-        let activeRate = this.state.exchangeRate;
-        let rateSourceLabel = 'Manual Rate';
+        let activeRate = 4.0; // Резервный курс на случай, если API NBP упадет
+        let rateSourceLabel = 'Fallback Rate';
 
         if (dateInput) {
             const nbpData = await this.fetchNBPRate(dateInput);
@@ -91,8 +108,13 @@ const core = {
                 activeRate = nbpData.rate;
                 rateSourceLabel = `NBP from ${nbpData.date}`;
             } else {
-                alert("Не удалось получить курс NBP. Используется курс из настроек.");
+                alert("Не удалось получить курс NBP (возможно ошибка сети). Используется резервный курс.");
             }
+        } else {
+            alert("Пожалуйста, выберите дату инвойса!");
+            btn.textContent = 'Calculate Total Reward';
+            btn.disabled = false;
+            return;
         }
 
         const list = document.getElementById('ui-details-list');
@@ -114,7 +136,7 @@ const core = {
         if (hasMultisport) addRow(APP_CONFIG.labels.multisport, this.state.multisport);
         if (hasLunch) addRow(APP_CONFIG.labels.lunch, this.state.lunch);
 
-        this.currentTotal = total; // Сохраняем для копирования
+        this.currentTotal = total; 
         document.getElementById('ui-total-value').textContent = total.toFixed(2) + ' PLN';
         document.getElementById('ui-total-value').style.color = total < 0 ? '#d32f2f' : '#8e2de2';
         document.getElementById('ui-result-box').style.display = 'block';
