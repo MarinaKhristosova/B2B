@@ -60,7 +60,8 @@ h1 { text-align: center; margin-bottom: 30px; color: #880e4f; font-weight: 700; 
 .input-group { margin-bottom: 15px; }
 label { display: block; font-weight: 600; margin-bottom: 5px; color: #4a148c; font-size: 0.9rem; }
 
-input[type="number"], input[type="date"] { 
+/* Общие стили для инпутов с суммами */
+input[type="number"] { 
     width: 100%; 
     padding: 12px; 
     border: 2px solid #e1bee7; 
@@ -68,18 +69,48 @@ input[type="number"], input[type="date"] {
     font-size: 1rem; 
     color: #333;
     background-color: #fff;
+}
+
+/* --- НОВЫЕ СТИЛИ ДЛЯ БЛОКА ДАТЫ --- */
+.date-group {
+    text-align: center; /* Центрируем надпись */
+    margin-bottom: 25px; 
+}
+
+.date-group label {
+    display: inline-block;
+}
+
+input[type="date"] { 
+    width: 200px; /* Делаем поле короче */
+    display: block;
+    margin: 0 auto; /* Ставим по центру */
+    padding: 10px 12px; 
+    border: 2px solid #ce93d8; /* Чуть более темная рамка для контраста */
+    border-radius: 10px; 
+    font-size: 1.05rem; 
+    font-weight: 600; /* Делаем текст жирнее */
+    color: #4a148c; 
+    background-color: #f3e5f5; /* Легкое фиолетовое затемнение */
     cursor: pointer;
+    text-align: center; /* Текст даты тоже по центру */
+    transition: background-color 0.3s ease;
+}
+
+input[type="date"]:hover {
+    background-color: #e1bee7; /* При наведении чуть темнее */
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
     cursor: pointer;
-    opacity: 0.6;
+    opacity: 0.7;
     transition: 0.2s;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator:hover {
     opacity: 1;
 }
+/* --- КОНЕЦ НОВЫХ СТИЛЕЙ ДАТЫ --- */
 
 .checkbox-container { display: flex; gap: 15px; margin: 20px 0; }
 .checkbox-group { flex: 1; background: #f3e5f5; padding: 12px; border-radius: 10px; display: flex; align-items: center; cursor: pointer; }
