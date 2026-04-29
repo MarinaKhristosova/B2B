@@ -1,4 +1,46 @@
-<div class="input-group">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B2B Reward Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>B2B Reward Calculator</h1>
+        
+        <div class="config-panel">
+            <h2>Settings <button class="reset-btn" onclick="core.reset()">↺ Reset to Defaults</button></h2>
+            <div class="config-values">
+                <div class="config-item">
+                    <h3>Exchange Rate <button class="config-edit-btn" onclick="core.toggleEdit('exchangeRate')">✏️</button></h3>
+                    <div class="config-value" id="val-exchangeRate">--</div>
+                    <div id="edit-exchangeRate" class="edit-form">
+                        <input type="number" step="0.0001" id="input-exchangeRate">
+                        <button class="btn-save" onclick="core.save('exchangeRate')">Save</button>
+                    </div>
+                </div>
+                <div class="config-item">
+                    <h3>Multisport <button class="config-edit-btn" onclick="core.toggleEdit('multisport')">✏️</button></h3>
+                    <div class="config-value" id="val-multisport">--</div>
+                    <div id="edit-multisport" class="edit-form">
+                        <input type="number" step="0.01" id="input-multisport">
+                        <button class="btn-save" onclick="core.save('multisport')">Save</button>
+                    </div>
+                </div>
+                <div class="config-item">
+                    <h3>Lunch <button class="config-edit-btn" onclick="core.toggleEdit('lunch')">✏️</button></h3>
+                    <div class="config-value" id="val-lunch">--</div>
+                    <div id="edit-lunch" class="edit-form">
+                        <input type="number" step="0.01" id="input-lunch">
+                        <button class="btn-save" onclick="core.save('lunch')">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-group">
             <label>Invoice Date (Для курса NBP):</label>
             <input type="date" id="ui-invoice-date">
         </div>
