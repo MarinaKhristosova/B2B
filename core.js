@@ -6,8 +6,8 @@ const APP_CONFIG = {
     },
     labels: {
         base: "Base Amount (USD)",
-        bonusUsd: "Bonus (USD)",
-        bonusPln: "Bonus (PLN)",
+        bonusUsd: "Additional amount (USD)",
+        bonusPln: "Additional amount (PLN)",
         multisport: "Multisport Benefit",
         lunch: "Lunch Allowance"
     }
@@ -124,7 +124,7 @@ const core = {
                 alert("Не удалось загрузить курс NBP. Используется резервный курс.");
             }
         } else {
-            alert("Пожалуйста, выберите дату инвойса!");
+            alert("Please, choose the Invoice Date!");
             btn.textContent = 'Calculate Total Reward';
             btn.disabled = false;
             return;
