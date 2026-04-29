@@ -1,86 +1,22 @@
-/* 1. Сброс настроек для всей страницы */
-html, body {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
+/* Стили для кнопки копирования */
+.btn-copy {
+    display: block;
+    margin: 0 auto 20px auto;
+    background: #8e2de2;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
 }
 
-* { 
-    box-sizing: border-box; 
-    font-family: 'Segoe UI', Roboto, sans-serif; 
+.btn-copy:hover {
+    background: #7b1fa2;
 }
 
-/* 2. Центрирование через Flexbox */
-body { 
-    background: linear-gradient(135deg, #B24592 0%, #F15F79 100%);
-    display: flex;           /* Включаем режим гибкого контейнера */
-    justify-content: center; /* Выравнивание по горизонтали */
-    align-items: center;     /* Выравнивание по вертикали */
-    padding: 20px; 
-    color: #333;
+.result-value {
+    margin-bottom: 10px; /* Немного уменьшил отступ, чтобы кнопка влезла */
 }
-
-/* 3. Контейнер калькулятора */
-.container { 
-    background: #ffffff; 
-    max-width: 700px; /* Немного сузил для более аккуратного вида */
-    width: 100%; 
-    padding: 35px; 
-    border-radius: 20px; 
-    box-shadow: 0 15px 35px rgba(136, 14, 79, 0.3);
-    margin: auto;     /* Дополнительная страховка для центрирования */
-}
-
-/* --- ОСТАЛЬНЫЕ СТИЛИ (РОЗОВАЯ ТЕМА) --- */
-
-h1 { text-align: center; margin-bottom: 30px; color: #880e4f; font-weight: 700; }
-
-.config-panel { 
-    background: #fce4ec; 
-    padding: 20px; 
-    border-radius: 15px; 
-    margin-bottom: 30px; 
-    border-left: 6px solid #d81b60; 
-}
-
-.config-panel h2 { display: flex; justify-content: space-between; align-items: center; font-size: 1.1rem; color: #ad1457; margin-bottom: 15px; }
-
-.config-values { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
-
-.config-item { background: #fff; padding: 15px; border-radius: 12px; border: 2px solid #f8bbd0; }
-
-.config-item h3 { font-size: 0.75rem; color: #7b1fa2; text-transform: uppercase; display: flex; justify-content: space-between; margin-bottom: 5px; }
-
-.config-value { font-size: 1.3rem; font-weight: 800; color: #4a148c; }
-
-.config-edit-btn { background: none; border: none; cursor: pointer; opacity: 0.5; }
-
-.edit-form { display: none; margin-top: 10px; border-top: 1px solid #f8bbd0; padding-top: 10px; }
-.edit-form input { width: 100%; padding: 8px; margin-bottom: 8px; border: 1px solid #e1bee7; border-radius: 5px; }
-
-.reset-btn { background: #ff4081; color: white; border: none; padding: 5px 12px; border-radius: 20px; cursor: pointer; font-size: 0.7rem; font-weight: 600; }
-
-.input-group { margin-bottom: 15px; }
-label { display: block; font-weight: 600; margin-bottom: 5px; color: #4a148c; font-size: 0.9rem; }
-input[type="number"] { width: 100%; padding: 12px; border: 2px solid #e1bee7; border-radius: 10px; font-size: 1rem; }
-
-.checkbox-container { display: flex; gap: 15px; margin: 20px 0; }
-.checkbox-group { flex: 1; background: #f3e5f5; padding: 12px; border-radius: 10px; display: flex; align-items: center; cursor: pointer; }
-input[type="checkbox"] { margin-right: 10px; accent-color: #9c27b0; }
-
-#calculate-btn { 
-    width: 100%; 
-    background: linear-gradient(to right, #8e2de2, #ec008c); 
-    color: white; border: none; padding: 16px; border-radius: 12px; 
-    font-size: 1.1rem; font-weight: 700; cursor: pointer; 
-    box-shadow: 0 4px 15px rgba(236, 0, 140, 0.3);
-}
-
-.result { margin-top: 25px; padding: 25px; background: #f3e5f5; border-radius: 15px; display: none; }
-.result-value { font-size: 2.2rem; font-weight: 800; text-align: center; margin-bottom: 20px; color: #8e2de2; }
-
-.calculation-details { list-style: none; background: #fff; padding: 15px; border-radius: 10px; border: 1px solid #e1bee7; }
-.calculation-details li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f3e5f5; font-size: 0.9rem; }
-
-.btn-save { background: #8e2de2; color: white; border: none; padding: 6px; border-radius: 5px; cursor: pointer; width: 100%; font-size: 0.8rem; }
