@@ -112,23 +112,28 @@ const core = {
         const hasMultisport = document.getElementById('ui-check-multisport').checked;
         const hasLunch = document.getElementById('ui-check-lunch').checked;
 
-        let activeRate = 4.0; 
-        let rateSourceLabel = 'Fallback Rate';
-
-        if (dateInput) {
-            const nbpData = await this.fetchNBPRate(dateInput);
-            if (nbpData) {
-                activeRate = nbpData.rate;
-                rateSourceLabel = `NBP from ${nbpData.date}`;
-            } else {
-                alert("Не удалось загрузить курс NBP. Используется резервный курс.");
-            }
-        } else {
-            alert("Please, choose the Invoice Date!");
+        // Если дата не выбрана
+        if (!dateInput) {
+            alert("Please select an Invoice Date!");
             btn.textContent = 'Calculate Total Reward';
             btn.disabled = false;
             return;
         }
+
+        // Запрашиваем курс из API
+        const nbpData = await this.fetchNBPRate(dateInput);
+
+        // Если API вернул ошибку или недоступен - СТРОГО ПРЕРЫВАЕМ РАСЧЕТ
+        if (!nbpData) {
+            alert("Error: Failed to load NBP exchange rate. Calculation aborted.");
+            btn.textContent = 'Calculate Total Reward';
+            btn.disabled = false;
+            return;
+        }
+
+        // Если всё ок, берем реальные данные
+        const activeRate = nbpData.rate;
+        const rateSourceLabel = `NBP from ${nbpData.date}`;
 
         const list = document.getElementById('ui-details-list');
         list.innerHTML = '';
